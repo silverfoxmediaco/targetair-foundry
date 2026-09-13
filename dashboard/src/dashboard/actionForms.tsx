@@ -20,7 +20,7 @@ import { shortDateYear } from "./format";
  * These parameters are `LocalDate`, so the YYYY-MM-DD an <input type="date">
  * produces goes through untouched. Appending T00:00:00Z is rejected with
  * InvalidParameterValue — a LocalDate has no timezone to get wrong. That is
- * why the read path normalises to UTC and the write path does not.
+ * why the read path normalizes to UTC and the write path does not.
  */
 
 /** A Date back to the YYYY-MM-DD an <input type="date"> expects. */

@@ -7,7 +7,7 @@ import css from "./Dashboard.module.css";
  * Average cycle time per station against the takt line.
  *
  * A line runs at the speed of its slowest station, so the only station that
- * sets programme throughput is the one furthest past takt. Everything to the
+ * sets program throughput is the one furthest past takt. Everything to the
  * left of the ice rule is absorbing slack; everything past it is the schedule.
  */
 
@@ -35,7 +35,7 @@ function StationTakt({ ops }: Props): React.ReactElement {
             {ops.stations.map((s) => {
               const over = s.overTaktDays > 0;
               const isBottleneck = s.stationCode === bottleneck?.stationCode;
-              const colour = isBottleneck
+              const color = isBottleneck
                 ? "var(--ta-late)"
                 : over
                   ? "var(--ta-at-risk)"
@@ -77,7 +77,7 @@ function StationTakt({ ops }: Props): React.ReactElement {
                       className={css.taTaktBar}
                       style={{
                         width: `${(s.avgCycleDays / scaleMax) * 100}%`,
-                        background: colour,
+                        background: color,
                       }}
                     />
                     <span
@@ -109,7 +109,7 @@ function StationTakt({ ops }: Props): React.ReactElement {
             <p className={css.taTaktCaption}>
               <span>
                 <strong className={css.taToneBad}>{bottleneck.stationName}</strong> runs{" "}
-                {bottleneck.overTaktDays} days over takt. The programme cannot beat{" "}
+                {bottleneck.overTaktDays} days over takt. The program cannot beat{" "}
                 {bottleneck.avgCycleDays} days per tail until it does.
               </span>
             </p>

@@ -53,7 +53,7 @@ shift between runs. They are shaped so the dashboard has something real to
 report:
 
 - **Wiring Harness runs 27 days against a 20-day takt.** It is the constraint,
-  and the programme cannot beat 27 days per tail until that changes.
+  and the program cannot beat 27 days per tail until that changes.
 - **Four work orders blocked** behind four open shortages, worth $122k of parts.
 - **Five tails forecast late**, three days each.
 - **Two tails are past their own forecast date and still undelivered** — while
@@ -98,7 +98,7 @@ blocked right now", and answering it through a two-hop traversal on every render
 is slower and harder to read than a direct link. The cost is that those foreign
 keys must stay consistent with the work order.
 
-That is a deliberate read-path denormalisation with a known integrity cost, not
+That is a deliberate read-path denormalization with a known integrity cost, not
 an oversight.
 
 ---
@@ -117,7 +117,7 @@ Two screens, and they read the ontology in deliberately opposite ways.
 
 - **Overview** (`/`) — [`dashboard/src/data/useOperations.ts`](dashboard/src/data/useOperations.ts)
   fetches seven object types in one parallel round and joins them in memory on
-  the same foreign keys the links are built from. At programme scale that beats
+  the same foreign keys the links are built from. At program scale that beats
   walking `$link` per row, which costs a request per hop.
 - **Airframe detail** (`/aircraft/:serialNumber`) —
   [`dashboard/src/data/useAircraftDetail.ts`](dashboard/src/data/useAircraftDetail.ts)
@@ -155,6 +155,18 @@ numerals so columns align.
 Typefaces are self-hosted via `@fontsource` rather than loaded from a CDN,
 because Foundry serves applications under a Content Security Policy that blocks
 external font hosts.
+
+---
+
+## Live
+
+**https://targetair-vrhmtpneox5dbsyg.apps.usw-23.palantirfoundry.com**
+
+Hosted on Foundry, authenticating through OAuth with authorization code and
+PKCE. Requires an account in the backing Foundry organization.
+
+Deployed with `npx @osdk/cli site deploy --version X`, which reads the
+application RID and build directory from `foundry.config.json`.
 
 ---
 

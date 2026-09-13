@@ -9,7 +9,7 @@
  *
  * Nothing in this file touches the network, the clock, or the ontology.
  * `asOf` is always passed in so that "today" is an argument rather than an
- * ambient fact, which is what makes the behaviour reproducible.
+ * ambient fact, which is what makes the behavior reproducible.
  */
 
 const DAY_MS = 86_400_000;
@@ -18,7 +18,7 @@ const DAY_MS = 86_400_000;
  * Whole days between two instants, counting calendar days rather than elapsed
  * time.
  *
- * Normalised to UTC midnight on both sides deliberately. The ontology stores
+ * Normalized to UTC midnight on both sides deliberately. The ontology stores
  * these columns as datetimes, so a naive subtraction is sensitive to the time
  * component and to daylight saving transitions — an hour of clock shift is
  * enough to turn a 3-day slip into 2.958 days, which floors to 2.
@@ -33,7 +33,7 @@ export function daysBetween(from: Date, to: Date): number {
  * Schedule variance: how much later the forecast is than the plan.
  *
  * Positive means late. Negative is possible and means the tail is forecast to
- * beat its plan, which is left signed rather than clamped, because a programme
+ * beat its plan, which is left signed rather than clamped, because a program
  * that is pulling in is information too.
  */
 export function slipDays(planned: Date | undefined, forecast: Date | undefined): number {
@@ -128,7 +128,7 @@ export function airframesCovered(
   return Math.floor(qtyOnHand / qtyPerAircraft);
 }
 
-/** Total schedule slip across a programme, counting only tails that are late. */
+/** Total schedule slip across a program, counting only tails that are late. */
 export function totalSlipDays(tails: readonly { slipDays: number }[]): number {
   return tails.reduce((sum, t) => sum + Math.max(0, t.slipDays), 0);
 }

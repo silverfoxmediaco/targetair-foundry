@@ -8,7 +8,7 @@ TARGET AIR LIMITED — EDIT SUMMARY
 - data/ — station, supplier, part, bom_line, aircraft, work_order,
   inventory_lot, shortage, non_conformance.
 - ontology-spec.md — 9 object types, 13 link types, PKs, date casting notes,
-  and the deliberate Shortage denormalisation decision.
+  and the deliberate Shortage denormalization decision.
 - Uploaded all 9 CSVs to Foundry, created and indexed all 9 object types.
   Row counts match source exactly.
 
@@ -310,7 +310,7 @@ THREE THINGS LEARNED
 3. The date parameters are LocalDate, NOT instants. Appending T00:00:00Z to be
    "safe about timezones" is rejected with InvalidParameterValue. A LocalDate
    has no timezone to get wrong — a delivery date is a day on a calendar, not a
-   moment. This is why the read path must normalise to UTC and the write path
+   moment. This is why the read path must normalize to UTC and the write path
    must not. The generated .d.ts labels these `datetime`, which is misleading;
    the server is the authority.
 
@@ -383,3 +383,24 @@ NOTES / OPEN ITEMS
   Ontology SDK > SDK versions > Terminal (Local) when an install 401s.
 - Not yet a git repository. Nothing committed.
 - Next: replace the smoke page with the real dashboard.
+
+2026-09-13  Phase 4: deployed, and a spelling sweep
+---------------------------------------------------
+LIVE: https://targetair-vrhmtpneox5dbsyg.apps.usw-23.palantirfoundry.com
+
+- Requested the subdomain in Developer Console > Website hosting.
+- .env.production — filled in VITE_FOUNDRY_REDIRECT_URL for the deployed
+  domain. It is read from a meta tag in index.html at runtime, so it must be
+  set BEFORE the production build, not after.
+- Registered the deployed /auth/callback in OAuth & restrictions, keeping both
+  localhost entries for local development.
+- Deployed with `npx @osdk/cli site deploy --version 0.1.0`. No manual upload:
+  foundry.config.json already held the application RID and ./dist, so the CLI
+  zips, uploads and versions in one command. 73 files, 1.32 MiB.
+
+SPELLING: James asked what "Programme" meant. The word is right — a program is
+the whole effort behind one aircraft type — but the spelling was British, on a
+work sample aimed at a Dallas defense contractor. Converted across 15 files:
+programme -> program (26), centre -> center (11, including the .taCentre class),
+colour -> color (8), plus normalise, denormalisation, behaviour, optimisation.
+Redeployed as 0.1.1.

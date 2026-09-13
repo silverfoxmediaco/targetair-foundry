@@ -44,12 +44,12 @@ function AircraftDetail(): React.ReactElement {
   const [dialog, setDialog] = useState<ActionTarget | undefined>(undefined);
 
   if (loading) {
-    return <div className={css.taCentre}>Traversing the ontology…</div>;
+    return <div className={css.taCenter}>Traversing the ontology…</div>;
   }
 
   if (error != null || data == null) {
     return (
-      <div className={css.taCentre}>
+      <div className={css.taCenter}>
         <div className={css.taErrorBox}>{error ?? "Airframe not found."}</div>
       </div>
     );
@@ -82,12 +82,12 @@ function AircraftDetail(): React.ReactElement {
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
             <Link className={css.taBackLink} to="/">
-              ← Programme overview
+              ← Program overview
             </Link>
           </div>
           <div className={css.taMastheadMeta}>
             <span className={css.taMetaItem}>
-              <span className={css.taMetaLabel}>Programme</span>
+              <span className={css.taMetaLabel}>Program</span>
               <span className={css.taMetaValue}>{data.program ?? "—"}</span>
             </span>
             <span className={css.taMetaItem}>

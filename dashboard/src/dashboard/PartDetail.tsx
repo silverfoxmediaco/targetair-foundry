@@ -20,12 +20,12 @@ function PartDetail(): React.ReactElement {
   const [dialog, setDialog] = useState<ActionTarget | undefined>(undefined);
 
   if (loading) {
-    return <div className={css.taCentre}>Traversing the ontology…</div>;
+    return <div className={css.taCenter}>Traversing the ontology…</div>;
   }
 
   if (error != null || data == null) {
     return (
-      <div className={css.taCentre}>
+      <div className={css.taCenter}>
         <div className={css.taErrorBox}>{error ?? "Part not found."}</div>
       </div>
     );
@@ -42,7 +42,7 @@ function PartDetail(): React.ReactElement {
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
             <Link className={css.taBackLink} to="/">
-              ← Programme overview
+              ← Program overview
             </Link>
           </div>
           <div className={css.taMastheadMeta}>
@@ -73,7 +73,7 @@ function PartDetail(): React.ReactElement {
               : ""}
             {data.qtyPerAircraft > 0
               ? `${data.qtyPerAircraft} per airframe, ${data.qtyOnHand} on hand, which covers ${data.airframesCovered} more ${data.airframesCovered === 1 ? "airframe" : "airframes"}.`
-              : `${data.qtyOnHand} on hand. Not on the bill of materials for this programme.`}
+              : `${data.qtyOnHand} on hand. Not on the bill of materials for this program.`}
             {openShortages.length > 0
               ? ` Currently short on ${openShortages.length} ${openShortages.length === 1 ? "airframe" : "airframes"}.`
               : ""}
@@ -161,7 +161,7 @@ function PartDetail(): React.ReactElement {
             </header>
             <div className={css.taPanelBody}>
               {data.consumption.length === 0 ? (
-                <p className={css.taEmpty}>Not on the bill of materials for this programme.</p>
+                <p className={css.taEmpty}>Not on the bill of materials for this program.</p>
               ) : (
                 <div className={css.taTableWrap}>
                   <table className={css.taTable}>

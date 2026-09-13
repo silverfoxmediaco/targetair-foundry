@@ -20,12 +20,12 @@ function SupplierDetail(): React.ReactElement {
   const [dialog, setDialog] = useState<ActionTarget | undefined>(undefined);
 
   if (loading) {
-    return <div className={css.taCentre}>Traversing the ontology…</div>;
+    return <div className={css.taCenter}>Traversing the ontology…</div>;
   }
 
   if (error != null || data == null) {
     return (
-      <div className={css.taCentre}>
+      <div className={css.taCenter}>
         <div className={css.taErrorBox}>{error ?? "Supplier not found."}</div>
       </div>
     );
@@ -47,7 +47,7 @@ function SupplierDetail(): React.ReactElement {
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
             <Link className={css.taBackLink} to="/">
-              ← Programme overview
+              ← Program overview
             </Link>
           </div>
           <div className={css.taMastheadMeta}>

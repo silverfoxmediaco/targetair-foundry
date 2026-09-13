@@ -60,7 +60,7 @@ describe("slipDays", () => {
   });
 
   it("reports a forecast that beats plan as negative rather than clamping", () => {
-    // A programme pulling in is information. Clamping to zero would hide it.
+    // A program pulling in is information. Clamping to zero would hide it.
     expect(slipDays(d("2026-12-18"), d("2026-12-15"))).toBe(-3);
   });
 
@@ -174,7 +174,7 @@ describe("shortageExposure", () => {
   });
 
   it("treats an unpriced part as zero rather than NaN", () => {
-    // A missing cost must not poison a sum. One NaN turns a programme total
+    // A missing cost must not poison a sum. One NaN turns a program total
     // into "$NaNk" on screen.
     expect(shortageExposure(12, undefined)).toBe(0);
   });
@@ -208,12 +208,12 @@ describe("totalSlipDays", () => {
   });
 
   it("does not let an early tail cancel out a late one", () => {
-    // Programme slip is exposure, not a net position. A tail pulling in three
+    // Program slip is exposure, not a net position. A tail pulling in three
     // days does not undo another tail losing three.
     expect(totalSlipDays([{ slipDays: 3 }, { slipDays: -3 }])).toBe(3);
   });
 
-  it("is zero for a programme on plan", () => {
+  it("is zero for a program on plan", () => {
     expect(totalSlipDays([{ slipDays: 0 }, { slipDays: 0 }])).toBe(0);
   });
 });

@@ -9,9 +9,9 @@ import SupplierPanel from "./SupplierPanel";
 import { shortDateYear, usd } from "./format";
 
 /**
- * Target Air Limited — programme operations, executive view.
+ * Target Air Limited — program operations, executive view.
  *
- * Reading order is deliberate. The verdict states whether the programme
+ * Reading order is deliberate. The verdict states whether the program
  * delivers. The figure band quantifies it. The schedule shows which tails.
  * Everything below the schedule is cause: throughput, parts, suppliers,
  * quality. No number appears without something underneath it that explains it.
@@ -34,14 +34,14 @@ function Verdict({ ops }: { ops: Operations }): React.ReactElement {
     <section className={css.taVerdict}>
       <span className={css.taVerdictHead}>
         {atRisk === 0
-          ? "Programme is on plan."
+          ? "Program is on plan."
           : `${atRisk} of ${totals.inProgress} tails in work are behind.`}
       </span>
       <span className={css.taVerdictBody}>
         {totals.overdue > 0
           ? `${totals.overdue} sit past their own forecast date and remain undelivered. `
           : ""}
-        {totals.slipDays} days of schedule slip across the programme, against{" "}
+        {totals.slipDays} days of schedule slip across the program, against{" "}
         {totals.blockedWorkOrders} work orders held by {totals.openShortages} open
         shortages worth {usd(totals.shortageExposureUsd)}.
         {totals.bottleneck != null
@@ -60,7 +60,7 @@ function Figures({ ops }: { ops: Operations }): React.ReactElement {
       label: "Tails in work",
       value: String(totals.inProgress),
       tone: css.taToneNeutral,
-      note: `${totals.delivered} delivered this programme`,
+      note: `${totals.delivered} delivered this program`,
     },
     {
       label: "Behind schedule",
@@ -112,12 +112,12 @@ function Dashboard(): React.ReactElement {
   const { data, error, loading, reload } = useOperations();
 
   if (loading) {
-    return <div className={css.taCentre}>Signing in and querying the ontology…</div>;
+    return <div className={css.taCenter}>Signing in and querying the ontology…</div>;
   }
 
   if (error != null || data == null) {
     return (
-      <div className={css.taCentre}>
+      <div className={css.taCenter}>
         <div className={css.taErrorBox}>{error ?? "No data returned."}</div>
       </div>
     );
@@ -131,13 +131,13 @@ function Dashboard(): React.ReactElement {
             <Mark />
             <span className={css.taWordmark}>
               <span className={css.taWordmarkName}>Target Air</span>
-              <span className={css.taWordmarkSub}>Programme operations</span>
+              <span className={css.taWordmarkSub}>Program operations</span>
             </span>
           </div>
 
           <div className={css.taMastheadMeta}>
             <span className={css.taMetaItem}>
-              <span className={css.taMetaLabel}>Programme</span>
+              <span className={css.taMetaLabel}>Program</span>
               <span className={css.taMetaValue}>TA-7</span>
             </span>
             <span className={css.taMetaItem}>

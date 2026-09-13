@@ -56,7 +56,7 @@ function slipLabel(row: AircraftRow, asOf: Date): string {
   return "on plan";
 }
 
-function markerColour(row: AircraftRow): string {
+function markerColor(row: AircraftRow): string {
   switch (row.delivery) {
     case "delivered":
       return "var(--ta-on-plan)";
@@ -101,7 +101,7 @@ function DeliverySchedule({ ops }: Props): React.ReactElement {
   return (
     <section className={css.taPanel}>
       <header className={css.taPanelHead}>
-        <h2 className={css.taPanelTitle}>Delivery schedule · TA-7 programme</h2>
+        <h2 className={css.taPanelTitle}>Delivery schedule · TA-7 program</h2>
         <span className={css.taPanelNote}>
           Planned against forecast, all {ops.aircraft.length} tails
         </span>
@@ -131,7 +131,7 @@ function DeliverySchedule({ ops }: Props): React.ReactElement {
             const forecast = row.forecastDelivery;
             const start = row.buildStart;
             const ghost = row.delivery === "delivered";
-            const colour = markerColour(row);
+            const color = markerColor(row);
 
             const hot = hovered === row.serialNumber;
             const rowCell = (base: string): string =>
@@ -191,7 +191,7 @@ function DeliverySchedule({ ops }: Props): React.ReactElement {
                       style={{
                         left: `${pct(planned)}%`,
                         width: `${Math.max(0, pct(forecast) - pct(planned))}%`,
-                        background: colour,
+                        background: color,
                       }}
                     />
                   ) : null}
@@ -205,7 +205,7 @@ function DeliverySchedule({ ops }: Props): React.ReactElement {
                   {forecast != null ? (
                     <span
                       className={css.taMarkForecast}
-                      style={{ left: `${pct(forecast)}%`, background: colour }}
+                      style={{ left: `${pct(forecast)}%`, background: color }}
                     />
                   ) : null}
                 </div>

@@ -135,8 +135,8 @@ is slower and harder to read than a direct link. The cost is that the foreign
 keys must stay consistent with the work order, which is guaranteed here because
 one generator writes all of them.
 
-If an interviewer asks why the model is denormalised, that is the answer: a
-deliberate read-path optimisation with a known integrity cost, not an oversight.
+If an interviewer asks why the model is denormalized, that is the answer: a
+deliberate read-path optimization with a known integrity cost, not an oversight.
 Worth raising before they ask.
 
 ---
@@ -164,7 +164,7 @@ The numbers are shaped so the dashboard has something to report:
 - **Two further tails, TA7-034 and TA7-035, are past their own forecast delivery
   date and still not delivered.** Their forecast equals their plan, so schedule
   variance reports them as on time while they are in fact the most overdue
-  aircraft on the programme. The dashboard treats "past forecast and
+  aircraft on the program. The dashboard treats "past forecast and
   undelivered" as its own state for exactly this reason.
 - **Eight open non-conformances**, heaviest at **ST-80 Integration & Flight Test**
   with three, while the throughput constraint is **ST-40 Wiring Harness**, which
