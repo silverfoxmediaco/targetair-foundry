@@ -92,3 +92,37 @@ jobs:
             exit 1
           fi
           echo "Generator output matches the committed data."
+
+  pipeline:
+    name: Pipeline — transforms run and validations fire
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PySpark
+        run: pip install --quiet "pyspark==3.5.3"
+
+      # Foundry transforms are ordinary PySpark functions wearing a decorator,
+      # so stubbing `transforms.api` runs the identical logic on a local Spark.
+      # This will not catch a wrong Foundry dataset path — only a real build
+      # does — but it catches every mistake in the dataframe work, which is
+      # where the mistakes actually are.
+      - name: Run the transforms against the committed data
+        working-directory: pipeline
+        run: python3 run_locally.py
+
+      # A validation that has never fired is a comment. Each case corrupts one
+      # thing the real data gets right and asserts the transform refuses.
+      - name: Prove the validations fail on bad data
+        working-directory: pipeline
+        run: python3 test_validations.py

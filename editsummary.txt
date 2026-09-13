@@ -404,3 +404,66 @@ work sample aimed at a Dallas defense contractor. Converted across 15 files:
 programme -> program (26), centre -> center (11, including the .taCentre class),
 colour -> color (8), plus normalise, denormalisation, behaviour, optimisation.
 Redeployed as 0.1.1.
+
+2026-09-13  CI, favicon, and the Foundry data pipeline
+------------------------------------------------------
+CI (.github/workflows/ci.yml) — three jobs on every push and PR:
+  dashboard  typecheck, lint, test, build
+  data       generate.py still reproduces the committed CSVs byte for byte
+  pipeline   transforms run on local Spark; validations proven to fire
+
+  CI gets NO Foundry credentials. A token with read+write on the ontology does
+  not belong in a public repo's secrets, and Foundry tokens last ~a day, so the
+  secret would need rotating daily. Instead CI swaps @target-air/sdk for
+  dashboard/ci/target-air-sdk-stub, which holds the SDK's REAL generated .d.ts
+  files plus an inert ESM runtime. The typecheck is therefore genuine — rename
+  an ontology property and the build breaks. Only the runtime is fake.
+
+  Getting there took three attempts, all verified locally before pushing:
+    - `export const Aircraft: any` fails, because the code uses these names as
+      TYPES (Osdk.Instance<Aircraft>), not just values.
+    - Deleting the dep from package.json makes eslint's
+      import/no-extraneous-dependencies fail. Point it at file:./ci/... instead.
+    - A CJS Proxy stub satisfies tsc but not rollup; the build needs real named
+      ESM exports.
+
+FAVICON + TITLE — index.html still shipped /react.svg and the title
+"Ontology SDK + React", which was a louder tell than the icon. Now favicon.svg
+(the brand mark as a single filled path, sharp at any size), a 32px PNG
+fallback, an apple-touch-icon, theme-color, a description meta, and the title
+"Target Air · Program Operations". Scaffold react.svg/palantir.svg deleted.
+
+PIPELINE (pipeline/) — four PySpark transforms for a Foundry Code Repository:
+    clean_station.py       types + over_takt_days + is_bottleneck
+    clean_aircraft.py      types + slip_days, joined to station name
+    part_cover.py          stock cover = on hand / per airframe
+    shortage_enriched.py   the showpiece join, one row per shortage reaching
+                           part, supplier, work order, aircraft and station
+
+  THE DESIGN RULE, and the thing worth defending: the pipeline computes what is
+  stable, the client computes what depends on "now". Slip days, over-takt,
+  exposure and cover are stored facts and belong in Spark. "Is this tail
+  overdue", "days past forecast" and "days to recovery" depend on today — a
+  nightly build would make them wrong every morning until it ran, confidently
+  and invisibly. Those stay in derive.ts, which takes asOf as an argument and
+  is tested against it. So derive.ts is not made redundant by the pipeline;
+  the split is principled.
+
+  shortage_enriched duplicates the join useOperations.ts does in TypeScript.
+  Deliberate: the client version must exist so an applied action updates the
+  screen immediately; the Spark version is what anything else consumes without
+  re-deriving it differently. Being able to explain when to choose each is the
+  point of having both.
+
+  VERIFIED LOCALLY, not just written. pipeline/run_locally.py stubs
+  transforms.api and runs the identical functions on a local Spark against
+  data/*.csv — all 4 produce output and pass validations.
+  pipeline/test_validations.py corrupts the data 8 ways and asserts each
+  transform refuses: duplicate station code, sequence gap, zero takt, unknown
+  aircraft status, forecast before build start, undelivered aircraft with no
+  station, shortage referencing a missing part, and a duplicate part inflating
+  the join. 8 of 8 fire. Both run in CI.
+
+  STILL TO DO IN FOUNDRY: create the Code Repository, paste the transforms,
+  build the outputs, then repoint the object types at clean/*. That last step
+  changes what the live app reads, so do one at a time and check row counts.
