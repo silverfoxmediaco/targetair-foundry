@@ -219,6 +219,58 @@ keyboard path already exists via the serial <Link>, and giving those cells
 their own tab stops would add a second focus target per row across twelve rows,
 which is worse for keyboard users, not better.
 
+2026-09-13  Phase 2: station, supplier and part detail
+-----------------------------------------------------
+- src/data/useStationDetail.ts + src/dashboard/StationDetail.tsx — NEW.
+  Station -> aircraft, workOrders, shortages, nonConformances, bomLines -> part.
+  Reached by clicking a bar on the takt chart.
+- src/data/useSupplierDetail.ts + src/dashboard/SupplierDetail.tsx — NEW.
+  Supplier -> parts -> shortages / inventoryLots / bomLines -> station.
+  Answers "if this supplier misses, which station stops", three hops from an
+  object that stores none of it.
+- src/data/usePartDetail.ts + src/dashboard/PartDetail.tsx — NEW.
+  Part -> supplier, inventoryLots, bomLines -> station, shortages. Headline
+  figure is cover: qty on hand / qty per airframe = how many more airframes
+  this stock builds. Needs two object types to compute, which is the point.
+- Cross-links throughout: every airframe, station, supplier and part reference
+  in any table navigates. Five routes now: /, /aircraft/:serial,
+  /station/:code, /supplier/:id, /part/:partNumber.
+
+TWO DATA BUGS FOUND BY BUILDING THE PAGES
+-----------------------------------------
+1. BOM was assigned to the wrong stations. Both the part family and its station
+   were derived from `index % 8`, so each family landed at whatever station
+   shared its slot — a coincidence of two equal-length lists. Wiring Harness
+   consumed autonomy compute modules; six of eight stations were wrong.
+   Replaced with an explicit family -> station field in PART_FAMILIES.
+
+   The fix improved the story rather than just correcting it. SHT-003 is now
+   a Wiring harness assembly, critical, at ST-40 Wiring Harness (the constraint
+   station), from Atlas Harness Systems (the worst supplier at 71% on time),
+   blocking TA7-040. Bad supplier + critical part + bottleneck + late tail in
+   one row, which is what ontology-spec.md always claimed and the data did not
+   previously support. A second critical shortage now traces to Lyra Propulsion
+   at 82% with a 90-day lead.
+
+2. Shorted parts showed healthy stock. Stock-outs were three hardcoded part
+   indices chosen before shortages existed, so P-1018 read 229 on hand while
+   being short by 2. Now reconciled after generation: any part with an open
+   shortage has its lots zeroed. Patched post-hoc rather than by reordering
+   generation, because the random draws must keep their sequence.
+
+   Changed datasets: bom_line, shortage, inventory_lot. Uploaded with the
+   capture-schema-first procedure; all three parsed first time and reindexed
+   without manual intervention.
+
+TABLE ALIGNMENT FIX
+-------------------
+`.taTable th` set text-align:left and outranked the single class `.taCellNum`,
+so every numeric column HEADER stayed left while its values went right — Lead,
+On Hand, Unit Cost, Qty, Recovers all drifted from their own numbers. Fixed with
+compound selectors (`.taTable th.taCellNum`). Same latent bug fixed in
+Smoke.module.css. Numeric headers also moved to the UI face so only the figures
+below them are monospaced.
+
 NOTES / OPEN ITEMS
 ------------------
 - TWO SPEC CORRECTIONS, made in ontology-spec.md after reading the generated

@@ -154,6 +154,37 @@
   font-size: var(--ta-size-body);
 }
 
+/* A cross-reference inside a table cell. Underlined on hover only, so a column
+   of them does not turn into a wall of blue rules. */
+.taInlineLink {
+  font-family: var(--ta-font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ta-ice);
+  text-decoration: none;
+}
+
+.taInlineLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Takt chart rows behave as links to the station. The label cell carries the
+   real anchor; the bar and value are pointer affordances. */
+.taTaktLink {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.taTaktLink:hover .taTaktName {
+  color: var(--ta-ice);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* A whole schedule row behaves as one control. The grid owns the layout, so
    the hit area is applied per cell and joined by a shared hover class. */
 .taRowLink {
@@ -612,11 +643,25 @@
   padding-right: 0;
 }
 
+/* Alignment is set on the compound selectors below, not here, because
+   `.taTable th` sets text-align:left and outranks a bare single class. A plain
+   `.taCellNum { text-align: right }` silently loses on every header cell and
+   the column headings drift away from their own numbers. */
 .taCellNum {
   font-family: var(--ta-font-mono);
   font-variant-numeric: tabular-nums;
-  text-align: right;
   white-space: nowrap;
+}
+
+.taTable th.taCellNum,
+.taTable td.taCellNum {
+  text-align: right;
+}
+
+/* Headers of numeric columns are labels, not data: keep them in the UI face so
+   only the figures beneath them are monospaced. */
+.taTable th.taCellNum {
+  font-family: var(--ta-font-ui);
 }
 
 .taCellMono {

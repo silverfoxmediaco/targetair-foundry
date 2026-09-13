@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import type { Operations } from "@/data/useOperations";
 import css from "./Dashboard.module.css";
 import { percent } from "./format";
@@ -58,7 +59,12 @@ function SupplierPanel({ ops }: Props): React.ReactElement {
               {ops.suppliers.map((s) => (
                 <tr key={s.supplierId}>
                   <td>
-                    {s.supplierName}
+                    <Link
+                      className={css.taInlineLink}
+                      to={`/supplier/${encodeURIComponent(s.supplierId)}`}
+                    >
+                      {s.supplierName}
+                    </Link>
                     <span className={css.taCellSub}>{s.location}</span>
                   </td>
                   <td className={css.taCellNum}>

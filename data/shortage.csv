@@ -1,5 +1,5 @@
 shortage_id,part_number,work_order_id,serial_number,station_code,qty_short,opened_date,expected_recovery_date,status,criticality
 SHT-001,P-1007,WO-5032,TA7-034,ST-80,12,2026-08-28,2026-09-26,Open,standard
-SHT-002,P-1013,WO-5061,TA7-038,ST-60,12,2026-08-16,2026-08-24,Open,standard
-SHT-003,P-1019,WO-5070,TA7-040,ST-40,2,2026-09-05,2026-10-31,Open,critical
+SHT-002,P-1014,WO-5061,TA7-038,ST-60,12,2026-08-16,2026-11-23,Open,critical
+SHT-003,P-1018,WO-5070,TA7-040,ST-40,2,2026-09-05,2026-10-30,Open,critical
 SHT-004,P-1025,WO-5075,TA7-042,ST-20,12,2026-08-19,2026-09-11,Open,standard

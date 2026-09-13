@@ -65,9 +65,16 @@
   border-bottom: none;
 }
 
+/* Set on compound selectors: `.taSmokeTable th` sets text-align:left and
+   outranks a bare single class, which would leave the heading left while its
+   numbers went right. */
 .taSmokeNumeric {
-  text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.taSmokeTable th.taSmokeNumeric,
+.taSmokeTable td.taSmokeNumeric {
+  text-align: right;
 }
 
 .taSmokeSub {

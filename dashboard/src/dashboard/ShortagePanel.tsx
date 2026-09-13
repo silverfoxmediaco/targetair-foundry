@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import type { Operations } from "@/data/useOperations";
 import css from "./Dashboard.module.css";
 import { shortDate, usd } from "./format";
@@ -51,7 +52,12 @@ function ShortagePanel({ ops }: Props): React.ReactElement {
                 return (
                   <tr key={s.shortageId}>
                     <td>
-                      {s.partDescription}
+                      <Link
+                        className={css.taInlineLink}
+                        to={`/part/${encodeURIComponent(s.partNumber)}`}
+                      >
+                        {s.partDescription}
+                      </Link>
                       {critical ? (
                         <>
                           {" "}
@@ -74,7 +80,12 @@ function ShortagePanel({ ops }: Props): React.ReactElement {
                       </span>
                     </td>
                     <td>
-                      <span className={css.taCellMono}>{s.serialNumber}</span>
+                      <Link
+                        className={css.taInlineLink}
+                        to={`/aircraft/${encodeURIComponent(s.serialNumber)}`}
+                      >
+                        {s.serialNumber}
+                      </Link>
                       <span className={css.taCellSub}>
                         {s.workOrderId} · {s.stationName ?? s.stationCode}
                       </span>

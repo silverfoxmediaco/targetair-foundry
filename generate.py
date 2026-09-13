@@ -100,20 +100,26 @@ write(
 # Slot order, supplier, lead time and criticality are load bearing: the part
 # loop indexes this list and the random draws that follow depend on the
 # sequence, so only the names change when the domain vocabulary changes.
+#
+# The fifth field is the station that consumes the family. It is explicit for a
+# reason: this used to be derived as STATIONS[index % 8] while the family was
+# PART_FAMILIES[index % 8], so a family landed at whatever station shared its
+# slot. The 1:1 mapping was a coincidence of two equal-length lists, and it put
+# autonomy compute modules on the wiring station.
 PART_FAMILIES = [
-    ("Structural bracket", "SUP-002", 35, "standard"),
-    ("Composite panel", "SUP-001", 21, "standard"),
-    ("Wiring harness assembly", "SUP-006", 60, "critical"),
-    ("Autonomy compute module", "SUP-003", 45, "critical"),
-    ("Servo actuator", "SUP-002", 40, "standard"),
-    ("Fastener kit", "SUP-004", 10, "standard"),
-    ("Propulsion mount", "SUP-005", 90, "critical"),
-    ("Navigation sensor assembly", "SUP-003", 30, "standard"),
+    ("Structural bracket", "SUP-002", 35, "standard", "ST-10"),
+    ("Composite panel", "SUP-001", 21, "standard", "ST-20"),
+    ("Wiring harness assembly", "SUP-006", 60, "critical", "ST-40"),
+    ("Autonomy compute module", "SUP-003", 45, "critical", "ST-50"),
+    ("Servo actuator", "SUP-002", 40, "standard", "ST-30"),
+    ("Fastener kit", "SUP-004", 10, "standard", "ST-70"),
+    ("Propulsion mount", "SUP-005", 90, "critical", "ST-60"),
+    ("Navigation sensor assembly", "SUP-003", 30, "standard", "ST-80"),
 ]
 
 parts = []
 for index in range(1, 61):
-    family, supplier, lead, crit = PART_FAMILIES[index % len(PART_FAMILIES)]
+    family, supplier, lead, crit, _station = PART_FAMILIES[index % len(PART_FAMILIES)]
     parts.append([
         f"P-{1000 + index}",
         f"{family} {index:02d}",
@@ -137,7 +143,9 @@ write(
 bom = []
 for row in parts:
     part_number = row[0]
-    station_code = STATIONS[int(part_number[-2:]) % len(STATIONS)][0]
+    # Consumed where the family says, not where the index happens to land.
+    index = int(part_number[2:]) - 1000
+    station_code = PART_FAMILIES[index % len(PART_FAMILIES)][4]
     bom.append([
         f"BOM-{part_number}",
         PROGRAM,
@@ -243,11 +251,9 @@ for index, row in enumerate(parts):
         random.choice(["STORES-A", "STORES-A", "STORES-B", "LINESIDE-4"]),
         (TODAY - timedelta(days=random.randint(3, 120))).isoformat(),
     ])
-write(
-    "inventory_lot",
-    ["lot_id", "part_number", "qty_on_hand", "location", "received_date"],
-    inventory,
-)
+
+# inventory_lot is written further down, after shortages, so the two datasets
+# can be reconciled. See the note at the end of section 8.
 
 # --------------------------------------------------------------------------
 # 8. shortages: the ones that actually stop work
@@ -282,6 +288,24 @@ write(
      "station_code", "qty_short", "opened_date", "expected_recovery_date",
      "status", "criticality"],
     shortages,
+)
+
+# A part cannot be short and well stocked at the same time. The stock-out used
+# to be three hardcoded part indices chosen before the shortages existed, so a
+# shorted part could show 229 on hand, which is visibly wrong on any screen
+# that puts the two side by side. Reconcile after the fact instead.
+#
+# Patched here rather than by reordering the generation, because the random
+# draws above must keep their sequence or every other number in the dataset
+# shifts.
+short_part_numbers = {row[1] for row in shortages}
+for lot in inventory:
+    if lot[1] in short_part_numbers:
+        lot[2] = 0
+write(
+    "inventory_lot",
+    ["lot_id", "part_number", "qty_on_hand", "location", "received_date"],
+    inventory,
 )
 
 # --------------------------------------------------------------------------

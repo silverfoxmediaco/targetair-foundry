@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import type { Operations } from "@/data/useOperations";
 import css from "./Dashboard.module.css";
 
@@ -15,6 +16,8 @@ interface Props {
 }
 
 function StationTakt({ ops }: Props): React.ReactElement {
+  const navigate = useNavigate();
+  const [hovered, setHovered] = useState<string | undefined>(undefined);
   const takt = ops.totals.taktDays;
   const scaleMax = Math.max(takt, ...ops.stations.map((s) => s.avgCycleDays)) * 1.12;
   const bottleneck = ops.totals.bottleneck;
@@ -38,17 +41,38 @@ function StationTakt({ ops }: Props): React.ReactElement {
                   ? "var(--ta-at-risk)"
                   : "var(--ta-ice-dim)";
 
+              const hot = hovered === s.stationCode;
+              const cell = (base: string): string =>
+                [base, css.taRowLink, hot ? css.taRowHot : ""].join(" ");
+              const enter = (): void => setHovered(s.stationCode);
+              const leave = (): void => setHovered(undefined);
+              const open = (): void => {
+                navigate(`/station/${encodeURIComponent(s.stationCode)}`);
+              };
+
               return (
                 <React.Fragment key={s.stationCode}>
-                  <div className={css.taTaktLabel}>
-                    <span className={css.taTaktName}>{s.stationName}</span>
-                    <span className={css.taTaktCode}>
-                      {s.stationCode}
-                      {s.aircraftHere.length > 0 ? ` · ${s.aircraftHere.join(", ")}` : ""}
-                    </span>
+                  <div className={cell(css.taTaktLabel)} onMouseEnter={enter} onMouseLeave={leave}>
+                    <Link
+                      className={css.taTaktLink}
+                      to={`/station/${encodeURIComponent(s.stationCode)}`}
+                    >
+                      <span className={css.taTaktName}>{s.stationName}</span>
+                      <span className={css.taTaktCode}>
+                        {s.stationCode}
+                        {s.aircraftHere.length > 0 ? ` · ${s.aircraftHere.join(", ")}` : ""}
+                      </span>
+                    </Link>
                   </div>
 
-                  <div className={css.taTaktTrack}>
+                  {/* Pointer convenience. The anchor above is the keyboard path. */}
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                  <div
+                    className={cell(css.taTaktTrack)}
+                    onMouseEnter={enter}
+                    onMouseLeave={leave}
+                    onClick={open}
+                  >
                     <span
                       className={css.taTaktBar}
                       style={{
@@ -62,11 +86,17 @@ function StationTakt({ ops }: Props): React.ReactElement {
                     />
                   </div>
 
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                   <span
-                    className={[
-                      css.taTaktValue,
-                      isBottleneck ? css.taToneBad : over ? css.taToneWarn : "",
-                    ].join(" ")}
+                    className={cell(
+                      [
+                        css.taTaktValue,
+                        isBottleneck ? css.taToneBad : over ? css.taToneWarn : "",
+                      ].join(" "),
+                    )}
+                    onMouseEnter={enter}
+                    onMouseLeave={leave}
+                    onClick={open}
                   >
                     {s.avgCycleDays}d
                   </span>
