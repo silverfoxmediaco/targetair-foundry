@@ -1,8 +1,41 @@
-import React from "react";
+import {
+  acknowledgeShortage,
+  dispositionNonConformance,
+  updateForecastDelivery,
+} from "@target-air/sdk";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import client from "@/client";
 import { useAircraftDetail } from "@/data/useAircraftDetail";
+import ActionDialog, { type FieldSpec } from "./ActionDialog";
 import css from "./Dashboard.module.css";
 import { shortDateYear, usd } from "./format";
+
+/**
+ * These action parameters are `LocalDate`, not instants, so the YYYY-MM-DD an
+ * <input type="date"> produces is already the right shape and goes through
+ * untouched.
+ *
+ * Worth stating, because the obvious defensive move is to append T00:00:00Z
+ * and "avoid a timezone bug". That is wrong twice over: the API rejects it
+ * outright with InvalidParameterValue, and a LocalDate has no timezone to get
+ * wrong in the first place. A delivery date is a day on a calendar, not a
+ * moment — which is the correct modelling choice and the reason the read path
+ * has to normalise to UTC while the write path does not.
+ */
+function toLocalDate(isoDate: string): string {
+  return isoDate;
+}
+
+/** A Date back to the YYYY-MM-DD an <input type="date"> expects. */
+function toInputDate(value: Date | undefined): string {
+  return value == null ? "" : value.toISOString().slice(0, 10);
+}
+
+type OpenDialog =
+  | { kind: "forecast" }
+  | { kind: "shortage"; shortageId: string; label: string; recovery?: Date }
+  | { kind: "ncr"; ncrId: string; label: string };
 
 /**
  * One airframe, reached by clicking it on the overview.
@@ -39,7 +72,8 @@ function workOrderChip(status: string | undefined): string {
 
 function AircraftDetail(): React.ReactElement {
   const { serialNumber } = useParams<{ serialNumber: string }>();
-  const { data, error, loading } = useAircraftDetail(serialNumber);
+  const { data, error, loading, reload } = useAircraftDetail(serialNumber);
+  const [dialog, setDialog] = useState<OpenDialog | undefined>(undefined);
 
   if (loading) {
     return <div className={css.taCentre}>Traversing the ontology…</div>;
@@ -72,8 +106,114 @@ function AircraftDetail(): React.ReactElement {
         ? "done"
         : "0d";
 
+  const dialogNode =
+    dialog?.kind === "forecast" ? (
+      <ActionDialog
+        title="Update forecast delivery"
+        subject={`${data.serialNumber} · currently ${shortDateYear(data.forecastDelivery)}`}
+        actionApiName="update-forecast-delivery"
+        submitLabel="Re-forecast"
+        fields={
+          [
+            {
+              name: "forecastDeliveryDate",
+              label: "New forecast delivery",
+              kind: "date",
+              required: true,
+              initial: toInputDate(data.forecastDelivery),
+            },
+            { name: "reason", label: "Reason", kind: "text", required: true },
+          ] satisfies FieldSpec[]
+        }
+        onSubmit={async (v) => {
+          // `reason` is collected but not sent: the ontology has nowhere to put
+          // it. In a real build it would write to an audit object. Requiring it
+          // still costs nothing and makes the user state a case.
+          await client(updateForecastDelivery).applyAction({
+            aircraft: data.serialNumber,
+            forecastDeliveryDate: toLocalDate(v.forecastDeliveryDate),
+          });
+        }}
+        onApplied={reload}
+        onClose={() => setDialog(undefined)}
+      />
+    ) : dialog?.kind === "shortage" ? (
+      <ActionDialog
+        title="Acknowledge shortage"
+        subject={dialog.label}
+        actionApiName="acknowledge-shortage"
+        submitLabel="Acknowledge"
+        fields={
+          [
+            {
+              name: "status",
+              label: "Status",
+              kind: "select",
+              options: ["Open", "Mitigating", "Closed"],
+              required: true,
+              initial: "Mitigating",
+            },
+            {
+              name: "expectedRecoveryDate",
+              label: "Expected recovery",
+              kind: "date",
+              required: true,
+              initial: toInputDate(dialog.recovery),
+            },
+          ] satisfies FieldSpec[]
+        }
+        onSubmit={async (v) => {
+          await client(acknowledgeShortage).applyAction({
+            shortage: dialog.shortageId,
+            status: v.status,
+            expectedRecoveryDate: toLocalDate(v.expectedRecoveryDate),
+          });
+        }}
+        onApplied={reload}
+        onClose={() => setDialog(undefined)}
+      />
+    ) : dialog?.kind === "ncr" ? (
+      <ActionDialog
+        title="Disposition non-conformance"
+        subject={dialog.label}
+        actionApiName="disposition-non-conformance"
+        submitLabel="Disposition"
+        fields={
+          [
+            {
+              name: "disposition",
+              label: "Disposition",
+              kind: "select",
+              options: ["Use As Is", "Rework", "Scrap"],
+              required: true,
+            },
+            {
+              name: "status",
+              label: "Status",
+              kind: "select",
+              options: ["Open", "Dispositioned", "Closed"],
+              required: true,
+              initial: "Dispositioned",
+            },
+            { name: "closedDate", label: "Closed date", kind: "date" },
+          ] satisfies FieldSpec[]
+        }
+        onSubmit={async (v) => {
+          await client(dispositionNonConformance).applyAction({
+            nonConformance: dialog.ncrId,
+            disposition: v.disposition,
+            status: v.status,
+            closedDate: v.closedDate === "" ? undefined : toLocalDate(v.closedDate),
+          });
+        }}
+        onApplied={reload}
+        onClose={() => setDialog(undefined)}
+      />
+    ) : null;
+
   return (
     <div className={css.taShell}>
+      {dialogNode}
       <div className={css.taInner}>
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
@@ -90,6 +230,15 @@ function AircraftDetail(): React.ReactElement {
               <span className={css.taMetaLabel}>Customer</span>
               <span className={css.taMetaValue}>{data.customer ?? "—"}</span>
             </span>
+            {data.status !== "Delivered" ? (
+              <button
+                type="button"
+                className={css.taButton}
+                onClick={() => setDialog({ kind: "forecast" })}
+              >
+                Update forecast
+              </button>
+            ) : null}
           </div>
         </header>
 
@@ -190,6 +339,7 @@ function AircraftDetail(): React.ReactElement {
                       <th scope="col" className={css.taCellNum}>
                         Recovers
                       </th>
+                      <th scope="col" />
                     </tr>
                   </thead>
                   <tbody>
@@ -239,6 +389,22 @@ function AircraftDetail(): React.ReactElement {
                                 : `${Math.abs(s.daysToRecovery)}d overdue`
                               : "—"}
                           </span>
+                        </td>
+                        <td className={css.taCellNum}>
+                          <button
+                            type="button"
+                            className={css.taRowAction}
+                            onClick={() =>
+                              setDialog({
+                                kind: "shortage",
+                                shortageId: s.shortageId,
+                                label: `${s.shortageId} · ${s.partDescription ?? s.partNumber}`,
+                                recovery: s.expectedRecovery,
+                              })
+                            }
+                          >
+                            Acknowledge
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -311,6 +477,7 @@ function AircraftDetail(): React.ReactElement {
                         <th scope="col">Finding</th>
                         <th scope="col">Station</th>
                         <th scope="col">Status</th>
+                        <th scope="col" />
                       </tr>
                     </thead>
                     <tbody>
@@ -336,6 +503,23 @@ function AircraftDetail(): React.ReactElement {
                                 ? ` · ${n.disposition}`
                                 : ""}
                             </span>
+                          </td>
+                          <td className={css.taCellNum}>
+                            {n.status === "Open" ? (
+                              <button
+                                type="button"
+                                className={css.taRowAction}
+                                onClick={() =>
+                                  setDialog({
+                                    kind: "ncr",
+                                    ncrId: n.ncrId,
+                                    label: `${n.ncrId} · ${n.description ?? ""}`,
+                                  })
+                                }
+                              >
+                                Disposition
+                              </button>
+                            ) : null}
                           </td>
                         </tr>
                       ))}

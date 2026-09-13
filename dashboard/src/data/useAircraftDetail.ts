@@ -1,6 +1,6 @@
 import { Aircraft } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import client, { auth } from "@/client";
 
 /**
@@ -205,10 +205,18 @@ export interface AircraftDetailState {
   data?: AircraftDetail;
   error?: string;
   loading: boolean;
+  /** Re-read from the ontology. Called after an action is applied, so the
+   *  screen shows what was actually stored rather than what we hoped was. */
+  reload: () => void;
 }
 
 export function useAircraftDetail(serialNumber: string | undefined): AircraftDetailState {
-  const [state, setState] = useState<AircraftDetailState>({ loading: true });
+  const [state, setState] = useState<Omit<AircraftDetailState, "reload">>({ loading: true });
+  const [nonce, setNonce] = useState(0);
+
+  const reload = useCallback(() => {
+    setNonce((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     if (serialNumber == null) {
@@ -217,7 +225,9 @@ export function useAircraftDetail(serialNumber: string | undefined): AircraftDet
     }
 
     let cancelled = false;
-    setState({ loading: true });
+    // Keep the previous data on screen while refetching, so applying an action
+    // does not blank the page the user is reading.
+    setState((prev) => ({ ...prev, loading: prev.data == null }));
 
     fetchDetail(serialNumber)
       .then((data) => {
@@ -234,7 +244,7 @@ export function useAircraftDetail(serialNumber: string | undefined): AircraftDet
     return () => {
       cancelled = true;
     };
-  }, [serialNumber]);
+  }, [serialNumber, nonce]);
 
-  return state;
+  return { ...state, reload };
 }

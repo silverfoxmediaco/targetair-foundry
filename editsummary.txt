@@ -271,6 +271,61 @@ compound selectors (`.taTable th.taCellNum`). Same latent bug fixed in
 Smoke.module.css. Numeric headers also moved to the UI face so only the figures
 below them are monospaced.
 
+2026-09-13  Phase 1: the write path
+-----------------------------------
+Three action types created in Ontology Manager, one per persona, after
+enabling Allow edits on Aircraft, Shortage and NonConformance.
+
+    update-forecast-delivery      Aircraft        forecastDeliveryDate
+    acknowledge-shortage          Shortage        status, expectedRecoveryDate
+    disposition-non-conformance   NonConformance  disposition, status, closedDate
+
+Each maps ONLY the properties that represent a decision. Part number, quantity
+short, serial number, severity and the rest stay unmapped, so the ontology
+itself refuses to let these actions rewrite what happened, regardless of what
+the client sends. That constraint lives in the model, not in a form validator.
+
+- src/dashboard/ActionDialog.tsx — NEW. Generic action form. Not optimistic:
+  waits for Foundry, then asks the page to re-read, because showing a value the
+  ontology has not accepted teaches users to trust a number that may vanish.
+  Surfaces Foundry's own error text rather than a generic failure. Enforces
+  required-ness client-side because the ontology does not.
+- src/data/useAircraftDetail.ts — MODIFIED. Exposes reload(); keeps previous
+  data on screen while refetching so applying an action does not blank the page.
+- src/dashboard/AircraftDetail.tsx — MODIFIED. Update forecast in the masthead,
+  Acknowledge per shortage row, Disposition per open NCR.
+- Dashboard.module.css — added button, dialog, field and scrim styles.
+
+THREE THINGS LEARNED
+--------------------
+1. Creating action types does not put them in the SDK. They must be added in
+   Developer Console > Ontology SDK > Resources > Action types, then a new SDK
+   version generated. Published 0.2.0.
+
+2. Vite pre-bundles dependencies and caches them. After installing the new SDK
+   the browser threw "does not provide an export named 'acknowledgeShortage'"
+   while tsc passed, because TypeScript read the real package and Vite served
+   the stale 0.1.0 bundle. Fix: rm -rf node_modules/.vite and restart.
+
+3. The date parameters are LocalDate, NOT instants. Appending T00:00:00Z to be
+   "safe about timezones" is rejected with InvalidParameterValue. A LocalDate
+   has no timezone to get wrong — a delivery date is a day on a calendar, not a
+   moment. This is why the read path must normalise to UTC and the write path
+   must not. The generated .d.ts labels these `datetime`, which is misleading;
+   the server is the authority.
+
+   Diagnosed by applying the action with curl against
+   POST /api/v2/ontologies/{ont}/actions/{apiName}/apply, which returns the
+   parameterBaseType in the error. Much faster than guessing from the browser.
+
+VERIFIED END TO END: opened the dialog on TA7-040, changed the forecast, saw
+the page re-read from +17d to +3d with the verdict sentence rewritten. Test
+edit reverted to the original 2026-12-18 / 2026-12-21.
+
+Note: every action parameter is nullable because Foundry created them that way.
+The SDK would accept a re-forecast with no date. Tightening that belongs in the
+ontology; the dialog patches over it for now.
+
 NOTES / OPEN ITEMS
 ------------------
 - TWO SPEC CORRECTIONS, made in ontology-spec.md after reading the generated

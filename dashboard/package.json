@@ -23,7 +23,7 @@
     "@osdk/foundry": "^2.75.0",
     "@osdk/oauth": "^1.1.0",
     "@osdk/react": "^2.67.0",
-    "@target-air/sdk": "latest",
+    "@target-air/sdk": "^0.2.0",
     "normalize.css": "^8.0.1",
     "react": "^18",
     "react-dom": "^18",
