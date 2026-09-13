@@ -467,3 +467,39 @@ PIPELINE (pipeline/) — four PySpark transforms for a Foundry Code Repository:
   STILL TO DO IN FOUNDRY: create the Code Repository, paste the transforms,
   build the outputs, then repoint the object types at clean/*. That last step
   changes what the live app reads, so do one at a time and check row counts.
+
+2026-09-13  Pipeline deployed and building in Foundry
+-----------------------------------------------------
+Code Repository `targetair-pipeline` in Target Air Limited, Python Transforms
+template. All four transforms build green; outputs verified via readTable.
+
+    clean/station            8 rows
+    clean/aircraft          12 rows
+    clean/part_cover        60 rows
+    clean/shortage_enriched  4 rows, 31 columns
+
+Matches the local Spark run exactly, including blocks_the_constraint = true for
+SHT-003 only (wiring harness, ST-40, Atlas Harness Systems).
+
+FOUR THINGS THAT TRIPPED THIS UP, all mechanical:
+
+1. The Foundry VS Code container has NO outbound internet. curl to
+   raw.githubusercontent.com fails with "Could not resolve host". Get files in
+   by dragging from Finder into the VS Code explorer.
+
+2. Drag-and-drop drops files at the folder you hit, which was src/ not
+   src/myproject/datasets/. Then `mv ../../*.py .` was too greedy and also
+   moved setup.py out of src/. Name files explicitly instead of globbing.
+
+3. The Build button builds THE FILE THAT IS OPEN. Building with pipeline.py
+   open gives "No transforms discovered in the pipeline from the requested
+   files" — pipeline.py only calls discover_transforms(), it defines none.
+   Open an actual transform file and build from there.
+
+4. Build does NOT build upstream dependencies. clean_aircraft and
+   shortage_enriched both failed with "Input resolution failed: the input
+   dataset has no data. Please build it first" because clean/station was empty.
+   Build in dependency order: clean_station first, then the rest.
+
+NEXT (not done): repoint the object types from the raw datasets to clean/*.
+That changes what the live app reads, so one at a time with a row-count check.
