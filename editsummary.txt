@@ -326,6 +326,34 @@ Note: every action parameter is nullable because Foundry created them that way.
 The SDK would accept a re-forecast with no date. Tightening that belongs in the
 ontology; the dialog patches over it for now.
 
+2026-09-13  Actions everywhere
+------------------------------
+A shortage can be acknowledged from the overview, the airframe, the station,
+the supplier or the part — five screens looking at the same object. Defining
+the form five times would guarantee drift: one screen allowing a status the
+others do not, or defaulting a date differently, and the ontology ending up
+holding whichever the user happened to reach.
+
+- src/dashboard/actionForms.tsx — NEW. ForecastDialog, ShortageDialog and
+  NcrDialog defined once, plus ActionHost which renders whichever is open.
+- reload() added to useOperations, useStationDetail, useSupplierDetail and
+  usePartDetail, matching useAircraftDetail. All keep previous data on screen
+  while refetching so applying an action never blanks the page.
+- AircraftDetail refactored onto the shared forms (its inline configs removed).
+- Acknowledge wired into: overview shortage table, airframe, station, supplier,
+  part. Disposition wired into: airframe, station. Update forecast stays on the
+  airframe, which is the only place a tail is the subject.
+
+VERIFIED EACH ACTION END TO END THROUGH THE UI
+  update-forecast-delivery    TA7-040 +17d -> +3d, verdict sentence rewritten
+  disposition-non-conformance ST-40 open rework 1 -> 0
+  acknowledge-shortage        SHT-003 recovery -> Nov 15, status -> Mitigating
+
+All three test edits then reverted, verified against the ontology:
+  SHT-003   status Open, recovery 2026-10-30
+  NCR-2021  status Open, disposition ''
+  TA7-040   forecast 2026-12-21, planned 2026-12-18
+
 NOTES / OPEN ITEMS
 ------------------
 - TWO SPEC CORRECTIONS, made in ontology-spec.md after reading the generated

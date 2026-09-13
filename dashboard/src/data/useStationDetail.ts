@@ -1,6 +1,6 @@
 import { Station } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import client, { auth } from "@/client";
 
 /**
@@ -212,10 +212,18 @@ export interface StationDetailState {
   data?: StationDetail;
   error?: string;
   loading: boolean;
+  /** Re-read from the ontology, so the screen shows what an action actually
+   *  stored rather than what we hoped it stored. */
+  reload: () => void;
 }
 
 export function useStationDetail(stationCode: string | undefined): StationDetailState {
-  const [state, setState] = useState<StationDetailState>({ loading: true });
+  const [state, setState] = useState<Omit<StationDetailState, "reload">>({ loading: true });
+  const [nonce, setNonce] = useState(0);
+
+  const reload = useCallback(() => {
+    setNonce((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     if (stationCode == null) {
@@ -224,7 +232,9 @@ export function useStationDetail(stationCode: string | undefined): StationDetail
     }
 
     let cancelled = false;
-    setState({ loading: true });
+    // Keep previous data on screen while refetching so applying an action
+    // does not blank the page the user is reading.
+    setState((prev) => ({ ...prev, loading: prev.data == null }));
 
     fetchDetail(stationCode)
       .then((data) => {
@@ -241,7 +251,7 @@ export function useStationDetail(stationCode: string | undefined): StationDetail
     return () => {
       cancelled = true;
     };
-  }, [stationCode]);
+  }, [stationCode, nonce]);
 
-  return state;
+  return { ...state, reload };
 }

@@ -1,6 +1,6 @@
 import { Supplier } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import client, { auth } from "@/client";
 
 /**
@@ -135,10 +135,18 @@ export interface SupplierDetailState {
   data?: SupplierDetail;
   error?: string;
   loading: boolean;
+  /** Re-read from the ontology, so the screen shows what an action actually
+   *  stored rather than what we hoped it stored. */
+  reload: () => void;
 }
 
 export function useSupplierDetail(supplierId: string | undefined): SupplierDetailState {
-  const [state, setState] = useState<SupplierDetailState>({ loading: true });
+  const [state, setState] = useState<Omit<SupplierDetailState, "reload">>({ loading: true });
+  const [nonce, setNonce] = useState(0);
+
+  const reload = useCallback(() => {
+    setNonce((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     if (supplierId == null) {
@@ -147,7 +155,9 @@ export function useSupplierDetail(supplierId: string | undefined): SupplierDetai
     }
 
     let cancelled = false;
-    setState({ loading: true });
+    // Keep previous data on screen while refetching so applying an action
+    // does not blank the page the user is reading.
+    setState((prev) => ({ ...prev, loading: prev.data == null }));
 
     fetchDetail(supplierId)
       .then((data) => {
@@ -164,7 +174,7 @@ export function useSupplierDetail(supplierId: string | undefined): SupplierDetai
     return () => {
       cancelled = true;
     };
-  }, [supplierId]);
+  }, [supplierId, nonce]);
 
-  return state;
+  return { ...state, reload };
 }

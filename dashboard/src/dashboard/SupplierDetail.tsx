@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSupplierDetail } from "@/data/useSupplierDetail";
+import { ActionHost, type ActionTarget } from "./actionForms";
 import css from "./Dashboard.module.css";
 import { percent, shortDateYear, usd } from "./format";
 
@@ -15,7 +16,8 @@ import { percent, shortDateYear, usd } from "./format";
 
 function SupplierDetail(): React.ReactElement {
   const { supplierId } = useParams<{ supplierId: string }>();
-  const { data, error, loading } = useSupplierDetail(supplierId);
+  const { data, error, loading, reload } = useSupplierDetail(supplierId);
+  const [dialog, setDialog] = useState<ActionTarget | undefined>(undefined);
 
   if (loading) {
     return <div className={css.taCentre}>Traversing the ontology…</div>;
@@ -40,6 +42,7 @@ function SupplierDetail(): React.ReactElement {
 
   return (
     <div className={css.taShell}>
+      <ActionHost open={dialog} onApplied={reload} onClose={() => setDialog(undefined)} />
       <div className={css.taInner}>
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
@@ -141,6 +144,7 @@ function SupplierDetail(): React.ReactElement {
                       <th scope="col" className={css.taCellNum}>
                         Recovers
                       </th>
+                      <th scope="col" />
                     </tr>
                   </thead>
                   <tbody>
@@ -189,6 +193,24 @@ function SupplierDetail(): React.ReactElement {
                         </td>
                         <td className={css.taCellNum}>{s.qtyShort}</td>
                         <td className={css.taCellNum}>{shortDateYear(s.expectedRecovery)}</td>
+                        <td className={css.taCellNum}>
+                          <button
+                            type="button"
+                            className={css.taRowAction}
+                            onClick={() =>
+                              setDialog({
+                                kind: "shortage",
+                                target: {
+                                  shortageId: s.shortageId,
+                                  label: `${s.shortageId} · ${s.partDescription ?? s.partNumber}`,
+                                  expectedRecovery: s.expectedRecovery,
+                                },
+                              })
+                            }
+                          >
+                            Acknowledge
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

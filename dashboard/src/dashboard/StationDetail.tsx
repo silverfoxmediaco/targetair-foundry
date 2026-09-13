@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useStationDetail } from "@/data/useStationDetail";
+import { ActionHost, type ActionTarget } from "./actionForms";
 import css from "./Dashboard.module.css";
 import { shortDateYear } from "./format";
 
@@ -39,7 +40,8 @@ function workOrderChip(status: string | undefined): string {
 
 function StationDetail(): React.ReactElement {
   const { stationCode } = useParams<{ stationCode: string }>();
-  const { data, error, loading } = useStationDetail(stationCode);
+  const { data, error, loading, reload } = useStationDetail(stationCode);
+  const [dialog, setDialog] = useState<ActionTarget | undefined>(undefined);
 
   if (loading) {
     return <div className={css.taCentre}>Traversing the ontology…</div>;
@@ -62,6 +64,7 @@ function StationDetail(): React.ReactElement {
 
   return (
     <div className={css.taShell}>
+      <ActionHost open={dialog} onApplied={reload} onClose={() => setDialog(undefined)} />
       <div className={css.taInner}>
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
@@ -272,6 +275,7 @@ function StationDetail(): React.ReactElement {
                         <th scope="col" className={css.taCellNum}>
                           Recovers
                         </th>
+                        <th scope="col" />
                       </tr>
                     </thead>
                     <tbody>
@@ -305,6 +309,24 @@ function StationDetail(): React.ReactElement {
                             )}
                           </td>
                           <td className={css.taCellNum}>{shortDateYear(s.expectedRecovery)}</td>
+                          <td className={css.taCellNum}>
+                            <button
+                              type="button"
+                              className={css.taRowAction}
+                              onClick={() =>
+                                setDialog({
+                                  kind: "shortage",
+                                  target: {
+                                    shortageId: s.shortageId,
+                                    label: `${s.shortageId} · ${s.partDescription ?? s.partNumber}`,
+                                    expectedRecovery: s.expectedRecovery,
+                                  },
+                                })
+                              }
+                            >
+                              Acknowledge
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -331,6 +353,7 @@ function StationDetail(): React.ReactElement {
                         <th scope="col">Finding</th>
                         <th scope="col">Airframe</th>
                         <th scope="col">Status</th>
+                        <th scope="col" />
                       </tr>
                     </thead>
                     <tbody>
@@ -359,6 +382,26 @@ function StationDetail(): React.ReactElement {
                               {n.severity}
                             </span>
                             <span className={css.taCellSub}>{n.status}</span>
+                          </td>
+                          <td className={css.taCellNum}>
+                            {n.status === "Open" ? (
+                              <button
+                                type="button"
+                                className={css.taRowAction}
+                                onClick={() =>
+                                  setDialog({
+                                    kind: "ncr",
+                                    target: {
+                                      ncrId: n.ncrId,
+                                      label: `${n.ncrId} · ${n.description ?? ""}`,
+                                      status: n.status,
+                                    },
+                                  })
+                                }
+                              >
+                                Disposition
+                              </button>
+                            ) : null}
                           </td>
                         </tr>
                       ))}

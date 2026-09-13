@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Operations } from "@/data/useOperations";
+import { ActionHost, type ActionTarget } from "./actionForms";
 import css from "./Dashboard.module.css";
 import { shortDate, usd } from "./format";
 
@@ -15,11 +16,19 @@ import { shortDate, usd } from "./format";
 
 interface Props {
   ops: Operations;
+  onApplied: () => void;
 }
 
-function ShortagePanel({ ops }: Props): React.ReactElement {
+function ShortagePanel({ ops, onApplied }: Props): React.ReactElement {
+  const [dialog, setDialog] = useState<ActionTarget | undefined>(undefined);
+
   return (
     <section className={css.taPanel}>
+      <ActionHost
+        open={dialog}
+        onApplied={onApplied}
+        onClose={() => setDialog(undefined)}
+      />
       <header className={css.taPanelHead}>
         <h2 className={css.taPanelTitle}>Open shortages</h2>
         <span className={css.taPanelNote}>
@@ -42,6 +51,7 @@ function ShortagePanel({ ops }: Props): React.ReactElement {
                 <th scope="col" className={css.taCellNum}>
                   Recovers
                 </th>
+                <th scope="col" />
               </tr>
             </thead>
             <tbody>
@@ -105,6 +115,24 @@ function ShortagePanel({ ops }: Props): React.ReactElement {
                             : `${Math.abs(s.daysToRecovery)}d overdue`
                           : "—"}
                       </span>
+                    </td>
+                    <td className={css.taCellNum}>
+                      <button
+                        type="button"
+                        className={css.taRowAction}
+                        onClick={() =>
+                          setDialog({
+                            kind: "shortage",
+                            target: {
+                              shortageId: s.shortageId,
+                              label: `${s.shortageId} · ${s.partDescription}`,
+                              expectedRecovery: s.expectedRecovery,
+                            },
+                          })
+                        }
+                      >
+                        Acknowledge
+                      </button>
                     </td>
                   </tr>
                 );

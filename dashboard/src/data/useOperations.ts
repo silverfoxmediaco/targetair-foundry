@@ -8,7 +8,7 @@ import {
   WorkOrder,
 } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import client, { auth } from "@/client";
 
 /**
@@ -335,10 +335,18 @@ export interface OperationsState {
   data?: Operations;
   error?: string;
   loading: boolean;
+  /** Re-read from the ontology, so the screen shows what an action actually
+   *  stored rather than what we hoped it stored. */
+  reload: () => void;
 }
 
 export function useOperations(): OperationsState {
-  const [state, setState] = useState<OperationsState>({ loading: true });
+  const [state, setState] = useState<Omit<OperationsState, "reload">>({ loading: true });
+  const [nonce, setNonce] = useState(0);
+
+  const reload = useCallback(() => {
+    setNonce((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -358,7 +366,7 @@ export function useOperations(): OperationsState {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [nonce]);
 
-  return state;
+  return { ...state, reload };
 }

@@ -109,7 +109,7 @@ function Figures({ ops }: { ops: Operations }): React.ReactElement {
 }
 
 function Dashboard(): React.ReactElement {
-  const { data, error, loading } = useOperations();
+  const { data, error, loading, reload } = useOperations();
 
   if (loading) {
     return <div className={css.taCentre}>Signing in and querying the ontology…</div>;
@@ -153,7 +153,7 @@ function Dashboard(): React.ReactElement {
 
         <div className={css.taSplitWide}>
           <StationTakt ops={data} />
-          <ShortagePanel ops={data} />
+          <ShortagePanel ops={data} onApplied={reload} />
         </div>
 
         <div className={css.taSplit}>
