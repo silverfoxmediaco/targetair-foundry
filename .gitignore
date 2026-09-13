@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+*.local
+
+# Secrets — nothing here should ever be committed.
+# Note: dashboard/.env.development and dashboard/.npmrc ARE committed on
+# purpose. Neither holds a secret: the OAuth client is public by design (PKCE,
+# no client secret) and .npmrc reads its token from ${FOUNDRY_TOKEN} in the
+# environment rather than storing one.
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+!dashboard/.env.development
+!dashboard/.env.production
+*.pem
+*.key
+secrets/
+
+# Editors / OS
+.DS_Store
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Personal / other-client notes, not part of this project
+resume-hometaxpro-foundry.md

@@ -1,0 +1,680 @@
+/* Target Air Limited — operations dashboard.
+   Every class is prefixed ta* and used by exactly one element role. */
+
+.taShell {
+  min-height: 100vh;
+  background: var(--ta-ground);
+  color: var(--ta-text);
+  font-family: var(--ta-font-ui);
+  font-size: var(--ta-size-body);
+  line-height: 1.45;
+}
+
+.taInner {
+  max-width: 96rem;
+  margin: 0 auto;
+  padding: 0 1.75rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---- Masthead --------------------------------------------------------- */
+
+.taMasthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--ta-gap-wide);
+  padding: 1.75rem 0 1rem;
+  border-bottom: 1px solid var(--ta-hairline-strong);
+  flex-wrap: wrap;
+}
+
+.taBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.taMark {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  color: var(--ta-ice);
+}
+
+.taWordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.taWordmarkName {
+  font-family: var(--ta-font-display);
+  font-weight: 600;
+  font-size: var(--ta-size-h1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.taWordmarkSub {
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ta-text-faint);
+  line-height: 1;
+}
+
+.taMastheadMeta {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.taMetaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.taMetaLabel {
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ta-text-faint);
+}
+
+.taMetaValue {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-h2);
+  color: var(--ta-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Verdict ---------------------------------------------------------- */
+
+.taVerdict {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1.25rem 1.25rem;
+  background: var(--ta-panel);
+  border: 1px solid var(--ta-hairline);
+  border-left: 3px solid var(--ta-late);
+  border-radius: var(--ta-radius);
+}
+
+.taVerdictHead {
+  font-family: var(--ta-font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.taVerdictBody {
+  color: var(--ta-text-muted);
+  max-width: 62ch;
+}
+
+/* ---- Panels ----------------------------------------------------------- */
+
+.taPanel {
+  background: var(--ta-panel);
+  border: 1px solid var(--ta-hairline);
+  border-radius: var(--ta-radius);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.taPanelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ta-gap);
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid var(--ta-hairline);
+  flex-wrap: wrap;
+}
+
+.taPanelTitle {
+  font-family: var(--ta-font-display);
+  font-weight: 600;
+  font-size: var(--ta-size-h2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.taPanelNote {
+  font-size: var(--ta-size-label);
+  color: var(--ta-text-faint);
+}
+
+.taPanelBody {
+  padding: 1.125rem;
+}
+
+.taSplit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.taSplitWide {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  gap: 1.25rem;
+}
+
+/* ---- Figure band ------------------------------------------------------ */
+
+.taFigures {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 1px solid var(--ta-hairline);
+  border-radius: var(--ta-radius);
+  background: var(--ta-panel);
+  overflow: hidden;
+}
+
+.taFigure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.125rem 1.25rem;
+  border-right: 1px solid var(--ta-hairline);
+  min-width: 0;
+}
+
+.taFigure:last-child {
+  border-right: none;
+}
+
+.taFigureLabel {
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ta-text-faint);
+}
+
+.taFigureValue {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-figure);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.taFigureUnit {
+  font-size: 0.875rem;
+  color: var(--ta-text-faint);
+  margin-left: 0.25rem;
+  font-weight: 400;
+}
+
+.taFigureNote {
+  font-size: var(--ta-size-label);
+  color: var(--ta-text-muted);
+}
+
+.taToneNeutral {
+  color: var(--ta-text);
+}
+.taToneGood {
+  color: var(--ta-on-plan);
+}
+.taToneWarn {
+  color: var(--ta-at-risk);
+}
+.taToneBad {
+  color: var(--ta-late);
+}
+.taToneCritical {
+  color: var(--ta-critical);
+}
+
+/* ---- Delivery schedule ------------------------------------------------ */
+
+.taScheduleGrid {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr) 5.5rem;
+  align-items: center;
+  column-gap: 0.875rem;
+}
+
+.taScheduleAxis {
+  position: relative;
+  height: 1.5rem;
+  border-bottom: 1px solid var(--ta-hairline);
+  margin-bottom: 0.5rem;
+}
+
+.taAxisTick {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-micro);
+  color: var(--ta-text-faint);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.taAxisRule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--ta-hairline);
+}
+
+.taTodayRule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--ta-ice);
+  opacity: 0.55;
+}
+
+.taTodayFlag {
+  position: absolute;
+  top: -0.1rem;
+  transform: translateX(-50%);
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.08em;
+  color: var(--ta-ice);
+  white-space: nowrap;
+}
+
+.taTailId {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.3rem 0;
+  min-width: 0;
+}
+
+.taTailSerial {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.taTailMeta {
+  font-size: var(--ta-size-micro);
+  color: var(--ta-text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.taTrack {
+  position: relative;
+  height: 2.1rem;
+}
+
+.taTrackBase {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--ta-hairline);
+}
+
+.taBuildSpan {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ta-hairline-strong);
+}
+
+.taBuildSpanDone {
+  background: rgba(79, 178, 134, 0.28);
+}
+
+.taSlipBar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 9px;
+  border-radius: 1px;
+  min-width: 5px;
+}
+
+.taMarkPlanned {
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  transform: translateY(-50%) rotate(45deg);
+  border: 1px solid var(--ta-text-faint);
+  background: var(--ta-panel);
+}
+
+.taMarkForecast {
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.taSlipCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  align-items: flex-end;
+  text-align: right;
+  padding: 0.3rem 0;
+}
+
+.taSlipValue {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.taSlipDate {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-micro);
+  color: var(--ta-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.taRowGhost {
+  opacity: 0.66;
+}
+
+.taLegend {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding-top: 0.875rem;
+  margin-top: 0.875rem;
+  border-top: 1px solid var(--ta-hairline);
+  font-size: var(--ta-size-micro);
+  color: var(--ta-text-faint);
+  letter-spacing: 0.04em;
+}
+
+.taLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.taLegendDiamond {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  border: 1px solid var(--ta-text-faint);
+}
+
+.taLegendBar {
+  width: 14px;
+  height: 7px;
+}
+
+/* ---- Takt chart ------------------------------------------------------- */
+
+.taTaktWrap {
+  position: relative;
+}
+
+.taTaktGrid {
+  display: grid;
+  /* Wide enough for the longest station name, "Actuation & Control Surfaces". */
+  grid-template-columns: 11.5rem minmax(0, 1fr) 3.25rem;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
+}
+
+.taTaktLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.taTaktName {
+  font-size: var(--ta-size-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.taTaktCode {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-micro);
+  color: var(--ta-text-faint);
+}
+
+.taTaktTrack {
+  position: relative;
+  height: 1.35rem;
+  background: var(--ta-panel-raised);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.taTaktBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px 0 0 2px;
+}
+
+.taTaktThreshold {
+  position: absolute;
+  top: -0.35rem;
+  bottom: -0.35rem;
+  width: 1px;
+  background: var(--ta-ice);
+  opacity: 0.8;
+}
+
+.taTaktValue {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-body);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.taTaktCaption {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ta-gap);
+  margin-top: 0.875rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--ta-hairline);
+  font-size: var(--ta-size-label);
+  color: var(--ta-text-muted);
+}
+
+/* ---- Tables ----------------------------------------------------------- */
+
+.taTableWrap {
+  overflow-x: auto;
+}
+
+.taTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ta-size-body);
+}
+
+.taTable th {
+  padding: 0 0.75rem 0.5rem 0;
+  text-align: left;
+  font-size: var(--ta-size-micro);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ta-text-faint);
+  border-bottom: 1px solid var(--ta-hairline);
+  white-space: nowrap;
+}
+
+.taTable td {
+  padding: 0.6rem 0.75rem 0.6rem 0;
+  border-bottom: 1px solid var(--ta-hairline);
+  vertical-align: top;
+}
+
+.taTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.taTable th:last-child,
+.taTable td:last-child {
+  padding-right: 0;
+}
+
+.taCellNum {
+  font-family: var(--ta-font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.taCellMono {
+  font-family: var(--ta-font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.taCellSub {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: var(--ta-size-micro);
+  color: var(--ta-text-faint);
+}
+
+/* ---- Chips ------------------------------------------------------------ */
+
+.taChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.taChipGood {
+  color: var(--ta-on-plan);
+  background: var(--ta-on-plan-wash);
+}
+.taChipWarn {
+  color: var(--ta-at-risk);
+  background: var(--ta-at-risk-wash);
+}
+.taChipBad {
+  color: var(--ta-late);
+  background: var(--ta-late-wash);
+}
+.taChipCritical {
+  color: var(--ta-critical);
+  background: var(--ta-critical-wash);
+}
+.taChipMuted {
+  color: var(--ta-text-faint);
+  background: var(--ta-panel-raised);
+}
+
+/* ---- Supplier rate bars ----------------------------------------------- */
+
+.taRateTrack {
+  /* Rendered as a span inside a table cell, so it must be made a block or the
+     width and height below are silently dropped. */
+  display: block;
+  position: relative;
+  width: 100%;
+  min-width: 4.5rem;
+  height: 5px;
+  background: var(--ta-panel-raised);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.35rem;
+}
+
+.taRateFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 3px;
+}
+
+/* ---- States ----------------------------------------------------------- */
+
+.taCentre {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--ta-ground);
+  color: var(--ta-text-muted);
+  font-family: var(--ta-font-ui);
+  font-size: var(--ta-size-body);
+}
+
+.taErrorBox {
+  max-width: 46rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--ta-panel);
+  border: 1px solid var(--ta-hairline);
+  border-left: 3px solid var(--ta-late);
+  border-radius: var(--ta-radius);
+  color: var(--ta-text);
+  white-space: pre-wrap;
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-label);
+  line-height: 1.6;
+}
+
+/* ---- Responsive ------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .taFigures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .taFigure {
+    border-bottom: 1px solid var(--ta-hairline);
+  }
+  .taSplit,
+  .taSplitWide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .taInner {
+    padding: 0 1rem 3rem;
+  }
+  .taScheduleGrid {
+    grid-template-columns: 6.5rem minmax(0, 1fr) 4.25rem;
+  }
+  .taTaktGrid {
+    grid-template-columns: 7rem minmax(0, 1fr) 3rem;
+  }
+}

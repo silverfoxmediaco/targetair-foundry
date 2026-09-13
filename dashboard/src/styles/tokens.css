@@ -1,0 +1,62 @@
+/*
+ * Target Air Limited — design tokens
+ *
+ * Deliberately single-theme. This is an operations dashboard read on a wall
+ * display and in a darkened room, so it commits to a dark ground rather than
+ * following the viewer's theme. Every colour is therefore painted explicitly.
+ *
+ * Ground and panel are derived from the brand navy (#10161D) sampled from the
+ * logo. Ice (#5AB3D1) is the brand accent and is reserved for structure and
+ * identity: the mark, axis rules, the takt threshold, the today line. State is
+ * carried by a separate semantic set so that "blue" never means "good".
+ */
+
+:root {
+  /* Ground */
+  --ta-ground: #080d12;
+  --ta-panel: #10161d;
+  --ta-panel-raised: #161f29;
+  --ta-hairline: #1f2b36;
+  --ta-hairline-strong: #2c3d4d;
+
+  /* Text.
+     Held at white and near-white rather than a grey ramp. On a ground this
+     dark, mid-greys read as switched-off rather than secondary, so hierarchy
+     is carried by size, weight and letter-spacing instead of by lightness. */
+  --ta-text: #ffffff;
+  --ta-text-muted: #dbe6f0;
+  --ta-text-faint: #b6c6d4;
+
+  /* Brand accent — structure and identity only */
+  --ta-ice: #5ab3d1;
+  --ta-ice-dim: #2f6d83;
+  --ta-ice-wash: rgba(90, 179, 209, 0.12);
+
+  /* Semantic state */
+  --ta-on-plan: #4fb286;
+  --ta-at-risk: #d99a2b;
+  --ta-late: #e06c4f;
+  --ta-critical: #ef5f77;
+  --ta-on-plan-wash: rgba(79, 178, 134, 0.14);
+  --ta-at-risk-wash: rgba(217, 154, 43, 0.14);
+  --ta-late-wash: rgba(224, 108, 79, 0.14);
+  --ta-critical-wash: rgba(239, 95, 119, 0.14);
+
+  /* Type */
+  --ta-font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --ta-font-ui: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --ta-font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --ta-size-figure: 1.875rem;
+  --ta-size-h1: 1.0625rem;
+  --ta-size-h2: 0.8125rem;
+  --ta-size-body: 0.8125rem;
+  --ta-size-label: 0.6875rem;
+  --ta-size-micro: 0.625rem;
+
+  /* Spacing */
+  --ta-gap-tight: 0.5rem;
+  --ta-gap: 1rem;
+  --ta-gap-wide: 1.5rem;
+  --ta-radius: 4px;
+}

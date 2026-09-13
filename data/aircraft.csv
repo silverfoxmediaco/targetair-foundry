@@ -1,0 +1,13 @@
+serial_number,program,status,current_station_code,build_start_date,planned_delivery_date,forecast_delivery_date,customer
+TA7-031,TA-7,Delivered,,2026-01-14,2026-06-23,2026-06-23,Customer A
+TA7-032,TA-7,Delivered,,2026-01-30,2026-07-09,2026-07-09,Internal
+TA7-033,TA-7,Delivered,,2026-02-25,2026-08-04,2026-08-04,Customer B
+TA7-034,TA-7,In Test,ST-80,2026-03-18,2026-08-25,2026-08-25,Customer A
+TA7-035,TA-7,In Test,ST-80,2026-04-05,2026-09-12,2026-09-12,Customer A
+TA7-036,TA-7,In Build,ST-80,2026-04-24,2026-10-01,2026-10-01,Customer A
+TA7-037,TA-7,In Build,ST-70,2026-05-15,2026-10-22,2026-10-25,Customer A
+TA7-038,TA-7,In Build,ST-60,2026-06-04,2026-11-11,2026-11-14,Customer B
+TA7-039,TA-7,In Build,ST-50,2026-06-24,2026-12-01,2026-12-01,Customer A
+TA7-040,TA-7,In Build,ST-40,2026-07-11,2026-12-18,2026-12-21,Customer B
+TA7-041,TA-7,In Build,ST-30,2026-08-04,2027-01-11,2027-01-14,Internal
+TA7-042,TA-7,In Build,ST-20,2026-08-21,2027-01-28,2027-01-31,Customer A

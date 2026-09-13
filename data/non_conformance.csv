@@ -1,0 +1,23 @@
+ncr_id,serial_number,station_code,severity,status,description,opened_date,closed_date,disposition
+NCR-2001,TA7-042,ST-20,Minor,Open,Sealant cure time not met,2026-07-11,,
+NCR-2002,TA7-037,ST-80,Minor,Open,Torque value not recorded,2026-09-10,,
+NCR-2003,TA7-040,ST-40,Major,Closed,Torque value not recorded,2026-06-16,2026-07-03,Rework
+NCR-2004,TA7-033,ST-50,Minor,Closed,Sealant cure time not met,2026-08-28,2026-09-08,Rework
+NCR-2005,TA7-042,ST-50,Minor,Dispositioned,Sealant cure time not met,2026-06-21,2026-07-07,Rework
+NCR-2006,TA7-036,ST-40,Critical,Closed,Surface finish below spec,2026-08-09,2026-08-15,Rework
+NCR-2007,TA7-040,ST-60,Minor,Closed,Torque value not recorded,2026-08-12,2026-08-31,Rework
+NCR-2008,TA7-035,ST-50,Minor,Closed,Sealant cure time not met,2026-06-18,2026-06-29,Use As Is
+NCR-2009,TA7-034,ST-40,Major,Dispositioned,Connector pin damage,2026-07-28,2026-08-13,Rework
+NCR-2010,TA7-038,ST-60,Major,Closed,Surface finish below spec,2026-08-14,2026-08-22,Use As Is
+NCR-2011,TA7-034,ST-80,Critical,Open,Hole position out of tolerance,2026-06-23,,
+NCR-2012,TA7-033,ST-40,Critical,Dispositioned,Connector pin damage,2026-07-03,2026-07-19,Scrap
+NCR-2013,TA7-040,ST-60,Minor,Dispositioned,Connector pin damage,2026-07-05,2026-07-13,Rework
+NCR-2014,TA7-035,ST-20,Minor,Open,Connector pin damage,2026-08-08,,
+NCR-2015,TA7-042,ST-40,Major,Dispositioned,Surface finish below spec,2026-09-02,2026-09-18,Use As Is
+NCR-2016,TA7-036,ST-10,Minor,Dispositioned,Hole position out of tolerance,2026-08-02,2026-08-18,Rework
+NCR-2017,TA7-031,ST-50,Minor,Open,Connector pin damage,2026-08-12,,
+NCR-2018,TA7-040,ST-40,Major,Closed,Surface finish below spec,2026-08-04,2026-08-06,Scrap
+NCR-2019,TA7-031,ST-30,Minor,Dispositioned,Sealant cure time not met,2026-09-07,2026-09-18,Scrap
+NCR-2020,TA7-031,ST-80,Major,Open,Sealant cure time not met,2026-06-25,,
+NCR-2021,TA7-036,ST-40,Major,Open,Hole position out of tolerance,2026-08-10,,
+NCR-2022,TA7-036,ST-30,Minor,Open,Torque value not recorded,2026-08-14,,

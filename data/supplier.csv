@@ -1,0 +1,7 @@
+supplier_id,supplier_name,on_time_rate,avg_lead_time_days,location
+SUP-001,Meridian Composites,0.94,21,"Wichita, KS"
+SUP-002,Corvus Machining,0.88,35,"Hartford, CT"
+SUP-003,Halden Autonomy Systems,0.97,45,"San Jose, CA"
+SUP-004,Ferrostone Fasteners,0.99,10,"Cleveland, OH"
+SUP-005,Lyra Propulsion,0.82,90,"Indianapolis, IN"
+SUP-006,Atlas Harness Systems,0.71,60,"Monterrey, MX"

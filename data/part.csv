@@ -1,0 +1,61 @@
+part_number,description,supplier_id,lead_time_days,criticality,unit_cost_usd,uom
+P-1001,Composite panel 01,SUP-001,33,standard,5868.3,EA
+P-1002,Wiring harness assembly 02,SUP-006,70,critical,6370.2,EA
+P-1003,Autonomy compute module 03,SUP-003,51,critical,42.0,EA
+P-1004,Servo actuator 04,SUP-002,52,standard,5590.64,EA
+P-1005,Fastener kit 05,SUP-004,10,standard,7885.93,EA
+P-1006,Propulsion mount 06,SUP-005,86,critical,1955.2,KIT
+P-1007,Navigation sensor assembly 07,SUP-003,29,standard,1956.8,EA
+P-1008,Structural bracket 08,SUP-002,35,standard,8462.47,EA
+P-1009,Composite panel 09,SUP-001,27,standard,1782.17,EA
+P-1010,Wiring harness assembly 10,SUP-006,63,critical,6895.07,EA
+P-1011,Autonomy compute module 11,SUP-003,55,critical,2770.8,EA
+P-1012,Servo actuator 12,SUP-002,50,standard,1894.04,EA
+P-1013,Fastener kit 13,SUP-004,8,standard,5408.1,EA
+P-1014,Propulsion mount 14,SUP-005,99,critical,8263.79,EA
+P-1015,Navigation sensor assembly 15,SUP-003,37,standard,2534.51,KIT
+P-1016,Structural bracket 16,SUP-002,31,standard,3296.16,EA
+P-1017,Composite panel 17,SUP-001,23,standard,4631.8,EA
+P-1018,Wiring harness assembly 18,SUP-006,55,critical,5051.9,EA
+P-1019,Autonomy compute module 19,SUP-003,56,critical,4434.19,EA
+P-1020,Servo actuator 20,SUP-002,36,standard,6004.39,EA
+P-1021,Fastener kit 21,SUP-004,13,standard,5191.94,EA
+P-1022,Propulsion mount 22,SUP-005,96,critical,1255.16,EA
+P-1023,Navigation sensor assembly 23,SUP-003,35,standard,1425.83,KIT
+P-1024,Structural bracket 24,SUP-002,42,standard,1895.84,EA
+P-1025,Composite panel 25,SUP-001,23,standard,2070.58,EA
+P-1026,Wiring harness assembly 26,SUP-006,56,critical,4371.34,KIT
+P-1027,Autonomy compute module 27,SUP-003,53,critical,5455.67,EA
+P-1028,Servo actuator 28,SUP-002,52,standard,6895.87,EA
+P-1029,Fastener kit 29,SUP-004,11,standard,1695.29,KIT
+P-1030,Propulsion mount 30,SUP-005,85,critical,687.38,KIT
+P-1031,Navigation sensor assembly 31,SUP-003,40,standard,4771.74,EA
+P-1032,Structural bracket 32,SUP-002,47,standard,2577.8,EA
+P-1033,Composite panel 33,SUP-001,17,standard,7339.99,EA
+P-1034,Wiring harness assembly 34,SUP-006,60,critical,4452.12,EA
+P-1035,Autonomy compute module 35,SUP-003,40,critical,7758.01,KIT
+P-1036,Servo actuator 36,SUP-002,39,standard,950.13,EA
+P-1037,Fastener kit 37,SUP-004,8,standard,1604.12,EA
+P-1038,Propulsion mount 38,SUP-005,90,critical,3364.38,EA
+P-1039,Navigation sensor assembly 39,SUP-003,26,standard,9075.29,EA
+P-1040,Structural bracket 40,SUP-002,32,standard,6507.8,EA
+P-1041,Composite panel 41,SUP-001,18,standard,3620.36,EA
+P-1042,Wiring harness assembly 42,SUP-006,57,critical,851.06,EA
+P-1043,Autonomy compute module 43,SUP-003,48,critical,5918.45,EA
+P-1044,Servo actuator 44,SUP-002,35,standard,8133.64,EA
+P-1045,Fastener kit 45,SUP-004,10,standard,7826.06,KIT
+P-1046,Propulsion mount 46,SUP-005,102,critical,9073.93,EA
+P-1047,Navigation sensor assembly 47,SUP-003,34,standard,978.49,EA
+P-1048,Structural bracket 48,SUP-002,37,standard,2266.23,EA
+P-1049,Composite panel 49,SUP-001,26,standard,3199.6,EA
+P-1050,Wiring harness assembly 50,SUP-006,67,critical,4567.42,EA
+P-1051,Autonomy compute module 51,SUP-003,41,critical,5396.8,EA
+P-1052,Servo actuator 52,SUP-002,41,standard,9512.8,EA
+P-1053,Fastener kit 53,SUP-004,13,standard,9258.36,EA
+P-1054,Propulsion mount 54,SUP-005,99,critical,3481.85,EA
+P-1055,Navigation sensor assembly 55,SUP-003,28,standard,2961.94,EA
+P-1056,Structural bracket 56,SUP-002,39,standard,5361.53,EA
+P-1057,Composite panel 57,SUP-001,19,standard,5681.28,EA
+P-1058,Wiring harness assembly 58,SUP-006,63,critical,3596.23,EA
+P-1059,Autonomy compute module 59,SUP-003,46,critical,5225.26,KIT
+P-1060,Servo actuator 60,SUP-002,45,standard,4316.56,EA

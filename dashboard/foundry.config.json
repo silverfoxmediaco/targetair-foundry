@@ -1,0 +1,11 @@
+{
+  "foundryUrl": "https://silverformedia.usw-23.palantirfoundry.com",
+  "site": {
+    "application": "ri.third-party-applications.main.application.9d4c5760-9277-44ff-8618-5d9b60f58a0a",
+    "directory": "./dist",
+    "autoVersion": {
+      "type": "git-describe",
+      "tagPrefix": ""
+    }
+  }
+}

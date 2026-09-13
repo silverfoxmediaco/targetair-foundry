@@ -1,0 +1,216 @@
+TARGET AIR LIMITED — EDIT SUMMARY
+=================================
+
+2026-09-11  Data + ontology
+---------------------------
+- generate.py — deterministic synthetic data generator, seed 1947 (Bell X-1
+  first flight). Emits 9 CSVs into data/.
+- data/ — station, supplier, part, bom_line, aircraft, work_order,
+  inventory_lot, shortage, non_conformance.
+- ontology-spec.md — 9 object types, 13 link types, PKs, date casting notes,
+  and the deliberate Shortage denormalisation decision.
+- Uploaded all 9 CSVs to Foundry, created and indexed all 9 object types.
+  Row counts match source exactly.
+
+2026-09-12/13  Branding
+-----------------------
+- logo/targetair-mark.svg — Delta Mark B, filled path using currentColor.
+  Ice / navy / white variants plus PNG raster 16 to 1024.
+- logo/targetair-icon-stacked-512.png — used as the Developer Console app icon.
+- wordmark.html — three lockup options shown at hero, 28px and 16px on light
+  and dark grounds.
+
+2026-09-13  Link types + OSDK
+-----------------------------
+- Created all 13 link types in the Foundry ontology (26 traversal endpoints).
+- Created Developer Console application "Target Air".
+    application rid  ri.third-party-applications.main.application.9d4c5760-9277-44ff-8618-5d9b60f58a0a
+    client id        8e8e415c06941f8c23ff02ffae818cc6
+    ontology rid     ri.ontology.main.ontology.b1fa1da9-3014-4fc4-8890-9111be7bb634
+    artifact repo    ri.artifacts.main.repository.cd412153-c49c-4ace-a195-210f5fcb834c
+  Public client, authorization code grant with PKCE, organization Silverformedia.
+  Redirect URLs: http://localhost:8080/auth/callback and :5173/auth/callback.
+- Generated Ontology SDK @target-air/sdk@0.1.0 (generator 2.65.0), TypeScript /
+  npm. All 9 object types and all 26 link endpoints present.
+
+2026-09-13  Dashboard scaffold
+------------------------------
+- dashboard/ — scaffolded with @osdk/create-app, template-react, SDK 2.x.
+  Vite 7, React 18, TypeScript, react-router-dom 6.
+- dashboard/.npmrc — scoped registry for @target-air, auth via ${FOUNDRY_TOKEN}
+  so no credential is stored in the repo.
+- dashboard/.env.development — Foundry URL, client ID, ontology RID, redirect.
+- dashboard/src/Smoke.tsx + Smoke.module.css — NEW. Connectivity proof, not a
+  design. Fetches open shortages then walks Shortage -> Part, Shortage ->
+  WorkOrder and Shortage -> Aircraft per object via $link. Class names are
+  prefixed taSmoke* to keep them unique.
+- dashboard/src/router.tsx — MODIFIED. Root route now renders Smoke instead of
+  the scaffold Home page. Home.tsx and its components are left in place
+  untouched for reference and will be removed when the real dashboard lands.
+
+  Result, verified in browser: 4 open shortages, each resolving its part,
+  blocked work order and aircraft.
+    SHT-002  Fastener kit 13    P-1013  qty 12  standard  WO-5061  TA7-038  Nov 14 2026
+    SHT-001  Sensor assembly 07 P-1007  qty 12  standard  WO-5032  TA7-034  Aug 25 2026
+    SHT-004  Composite panel 25 P-1025  qty 12  standard  WO-5075  TA7-042  Jan 31 2027
+    SHT-003  Autonomy compute module 19 P-1019  qty  2  critical  WO-5070  TA7-040  Dec 21 2026
+
+2026-09-13  Executive dashboard
+-------------------------------
+Audience is C-suite: screen one answers "are we going to deliver", and every
+figure has something beneath it that explains the figure.
+
+- src/styles/tokens.css — NEW. Palette derived from the logo: ground and panel
+  from brand navy #10161D, accent ice #5AB3D1. Ice is reserved for structure
+  and identity (mark, takt threshold, today rule); state is carried by a
+  separate semantic set so blue never means "good". Single-theme by choice.
+  Text ramp held at white and near-white, no mid-greys.
+- src/index.css — REPLACED. Dropped the Blueprint imports and the 1280px cap
+  the scaffold put on #root. Fonts self-hosted via @fontsource (Poppins 600 for
+  identity, IBM Plex Sans for UI, IBM Plex Mono for every figure) because
+  Foundry's CSP blocks external font CDNs.
+- src/data/useOperations.ts — NEW. One parallel fetch of 7 object types, then
+  joins in memory on the same foreign keys the ontology links are built from.
+  Derives delivery state, slip days, station over-takt, shortage exposure and
+  supplier rollups.
+- src/dashboard/ — NEW. Dashboard.tsx (shell, verdict, figure band),
+  DeliverySchedule.tsx, StationTakt.tsx, ShortagePanel.tsx, SupplierPanel.tsx,
+  QualityPanel.tsx, format.ts, Dashboard.module.css. All class names prefixed
+  ta* and unique per element role.
+- src/router.tsx — MODIFIED. Root renders Dashboard; the connectivity proof
+  moved to /smoke.
+
+Fixes made during review:
+- .taRateTrack had no display:block, so as a <span> in a table cell its width
+  and height were dropped and the supplier on-time bars never drew.
+- "Behind schedule" counted forecast-late and overdue separately and could
+  double count a tail that was both. Now counted off the mutually exclusive
+  delivery state.
+- Removed a slip magnitude bar that rendered as a full-width rule and read as
+  a stray underline. The "+3d" figure already carries the magnitude.
+- Overdue tails showed a red em dash; they now read "19d past".
+
+2026-09-13  Domain correction — unmanned, not crewed
+---------------------------------------------------
+James: Target Air builds drones, flown FPV by a remote operator or by an
+onboard autonomy stack. Avionics is not a thing that goes down this line. The
+original station list and part catalogue were a crewed-aircraft line.
+
+generate.py — string tables only. The sequence of random draws is untouched, so
+the data is numerically identical; only vocabulary moved.
+
+  Stations    ST-10 Fuselage Join           -> Airframe Build
+              ST-20 Wing Mate               -> Wing & Boom Mate
+              ST-30 Hydraulics              -> Actuation & Control Surfaces
+              ST-40 Wiring Harness          -> unchanged, still the bottleneck
+              ST-50 Avionics Install        -> Autonomy & Datalink
+              ST-60 Engine Install          -> Propulsion & Power
+              ST-70 Paint                   -> Finish & Coatings
+              ST-80 Final Assembly & Test   -> Integration & Flight Test
+
+  Suppliers   SUP-003 Halden Avionics       -> Halden Autonomy Systems
+              SUP-005 Lyra Powerplant       -> Lyra Propulsion
+
+  Parts       Avionics module               -> Autonomy compute module
+              Hydraulic actuator            -> Servo actuator
+              Engine mount                  -> Propulsion mount
+              Sensor assembly               -> Navigation sensor assembly
+
+Verified by diffing every CSV against a backup taken before the change:
+  aircraft, bom_line, inventory_lot, non_conformance, shortage, work_order
+    — byte identical
+  station    — only station_name changed
+  supplier   — only supplier_name changed
+  part       — only description changed
+
+So the whole story is preserved: ST-40 still 27 days against 20-day takt, the
+critical shortage is still P-1019 from SUP-003, still 4 blocked work orders,
+5 tails at +3d, 15 slip days, 8 open NCRs.
+
+The critical part is now "Autonomy compute module 19" — which is a better fit
+for the point being made, since a long-lead compute module from a reliable
+vendor is exactly the kind of part you cannot expedite.
+
+RE-UPLOADED TO FOUNDRY via API: station.csv, supplier.csv, part.csv. Verified
+in the object types. The dashboard needed no code change; it reads these as
+data.
+
+    dataset rids
+      station   ri.foundry.main.dataset.83473942-c4fa-46cf-aa46-ff3b0192db93
+      supplier  ri.foundry.main.dataset.2ba7373d-e403-4a0d-9cbe-4051fd37ec6a
+      part      ri.foundry.main.dataset.a22f3bca-ec57-4422-87a8-4d3eedadb2f9
+
+HOW TO UPLOAD A CSV TO AN EXISTING FOUNDRY DATASET (learned the hard way)
+------------------------------------------------------------------------
+1. Upload atomically with the v1 endpoint. It opens, uploads and commits in
+   one call:
+     POST /api/v1/datasets/{rid}/files:upload
+          ?filePath=NAME.csv&transactionType=SNAPSHOT
+   SNAPSHOT replaces dataset contents, so there is no append/duplication risk.
+
+   Do NOT use the v2 three-step flow (create transaction, PUT file, commit).
+   The v2 file PUT path 404s, and committing afterwards commits an EMPTY
+   snapshot, which wipes the dataset. That happened to station.csv here and was
+   restored about 30 seconds later. The rule: never commit a transaction
+   without checking the upload into it returned 200.
+
+2. A raw file upload does NOT carry a schema. The UI upload does two things,
+   infer a schema and store the file; the API upload only does the second. With
+   no schema the object type reports "schema mismatch between this object type
+   and its backing datasource" and refuses to index, while continuing to serve
+   its last good index. Dataset looks right, ontology serves stale data.
+
+   Re-apply with PUT /api/v1/datasets/{rid}/schema?branchId=master&preview=true
+   Read the expected types off the object type first
+   (GET /api/v2/ontologies/{ont}/objectTypes/{Type}) and mirror them exactly
+   rather than letting Foundry re-infer.
+
+3. recordDelimiter MUST match the bytes on disk. Python's csv.writer emits
+   CRLF, not LF. Setting "\n" makes Spark refuse the file:
+     "\n has been set in the schema and \r\n has been detected in the file"
+   Omitting the key does NOT fall back to permissive; it defaults to "\n".
+   Set it explicitly to "\r\n".
+
+   This surfaced as Funnel:InvalidInputDataset on the Background Changelog
+   build, which is a useless error on its own. The readable one comes from
+     GET /api/v2/datasets/{rid}/readTable?format=CSV&branchName=master&preview=true
+   That endpoint is the fastest way to tell whether a dataset is actually
+   parseable, and should be the first check after any API upload.
+
+4. After fixing the schema, the object type may still need a manual reindex:
+   Ontology Manager > object type > Datasources > Live pipeline "..." > Reindex.
+   Supplier recovered on its own; station and part needed the manual trigger.
+
+Note: generate.py still writes CRLF and the stored schemas now say "\r\n", so
+the two are consistent. If generate.py is ever changed to LF, the three schemas
+must be updated to match or parsing breaks again.
+
+NOTES / OPEN ITEMS
+------------------
+- TWO SPEC CORRECTIONS, made in ontology-spec.md after reading the generated
+  data. Both matter if this gets walked through in an interview.
+  1. The critical shortage does NOT come from Atlas Harness Systems. It is
+     Autonomy compute module 19 from Halden Autonomy Systems, the BEST supplier at 97% on time,
+     with a 56-day lead time. Atlas is the worst supplier at 71% but sits behind
+     no open shortage. Worst supplier and current constraint are different
+     questions.
+  2. Open NCRs are NOT concentrated in wiring. Heaviest is ST-80 Integration & Flight Test
+     with 3; ST-40 Wiring Harness, the throughput constraint, has 1. Quality and
+     throughput point at different stations.
+- TA7-034 and TA7-035 are past their forecast delivery date and undelivered,
+  while their forecast still equals their plan, so schedule variance calls them
+  on time. Treated as a distinct "past forecast" state rather than hidden. This
+  is a generator artifact (the data was built around an early-September as-of
+  date) but it is also the most realistic thing on the screen, so it was kept.
+  Re-running generate.py with refreshed forecast dates would remove it.
+- asOf is the real current date, so the picture moves as time passes. Pin it to
+  a constant if a stable demo is wanted.
+- Date columns generated as `datetime`, not `date`. Foundry inferred timestamps
+  from the CSVs. Works, but date-only comparisons carry a time component.
+  Formatting is pinned to UTC in Smoke.tsx so the displayed day does not shift.
+- FOUNDRY_TOKEN is only needed to run `npm install` against the Foundry
+  registry, not to run the app. The app authenticates the user via OAuth.
+  Tokens from Developer Console are short-lived; fetch a fresh one from
+  Ontology SDK > SDK versions > Terminal (Local) when an install 401s.
+- Not yet a git repository. Nothing committed.
+- Next: replace the smoke page with the real dashboard.

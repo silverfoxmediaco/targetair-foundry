@@ -1,0 +1,78 @@
+.taSmokeShell {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #0d1520;
+}
+
+.taSmokeHeading {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.taSmokeStatus {
+  margin: 0 0 1.75rem;
+  font-size: 0.875rem;
+  color: #5a6675;
+}
+
+.taSmokeError {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid #b42318;
+  background: #fef3f2;
+  font-size: 0.875rem;
+  color: #7a271a;
+  white-space: pre-wrap;
+}
+
+.taSmokeTableWrap {
+  overflow-x: auto;
+  border: 1px solid #e3e8ee;
+  border-radius: 6px;
+}
+
+.taSmokeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.taSmokeTable th {
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5a6675;
+  background: #f7f9fb;
+  border-bottom: 1px solid #e3e8ee;
+  white-space: nowrap;
+}
+
+.taSmokeTable td {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid #eef2f6;
+  vertical-align: top;
+}
+
+.taSmokeTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.taSmokeNumeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.taSmokeSub {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  color: #7a8697;
+}

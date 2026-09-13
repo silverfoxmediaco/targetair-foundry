@@ -1,0 +1,9 @@
+station_code,station_name,sequence,standard_hours,takt_days,avg_cycle_days
+ST-10,Airframe Build,1,320,20,18
+ST-20,Wing & Boom Mate,2,280,20,19
+ST-30,Actuation & Control Surfaces,3,240,20,17
+ST-40,Wiring Harness,4,400,20,27
+ST-50,Autonomy & Datalink,5,300,20,21
+ST-60,Propulsion & Power,6,260,20,18
+ST-70,Finish & Coatings,7,160,20,12
+ST-80,Integration & Flight Test,8,340,20,22
