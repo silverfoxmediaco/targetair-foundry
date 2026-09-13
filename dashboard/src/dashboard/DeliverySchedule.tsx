@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import type { AircraftRow, Operations } from "@/data/useOperations";
 import css from "./Dashboard.module.css";
 import { monthLabel, shortDate } from "./format";
@@ -69,6 +70,11 @@ function markerColour(row: AircraftRow): string {
 }
 
 function DeliverySchedule({ ops }: Props): React.ReactElement {
+  const navigate = useNavigate();
+  // Which row the pointer is over. The three cells of a row are separate grid
+  // children, so the highlight has to be shared rather than inherited.
+  const [hovered, setHovered] = useState<string | undefined>(undefined);
+
   const dates = ops.aircraft.flatMap((a) =>
     [a.buildStart, a.plannedDelivery, a.forecastDelivery].filter(
       (d): d is Date => d != null,
@@ -127,17 +133,43 @@ function DeliverySchedule({ ops }: Props): React.ReactElement {
             const ghost = row.delivery === "delivered";
             const colour = markerColour(row);
 
+            const hot = hovered === row.serialNumber;
+            const rowCell = (base: string): string =>
+              [base, css.taRowLink, ghost ? css.taRowGhost : "", hot ? css.taRowHot : ""].join(" ");
+            const enter = (): void => setHovered(row.serialNumber);
+            const leave = (): void => setHovered(undefined);
+            const open = (): void => {
+              navigate(`/aircraft/${encodeURIComponent(row.serialNumber)}`);
+            };
+
             return (
               <React.Fragment key={row.serialNumber}>
-                <div className={[css.taTailId, ghost ? css.taRowGhost : ""].join(" ")}>
-                  <span className={css.taTailSerial}>{row.serialNumber}</span>
+                <div className={rowCell(css.taTailId)} onMouseEnter={enter} onMouseLeave={leave}>
+                  {/* A real link, so the row is keyboard reachable and opens in
+                      a new tab on middle click like anything else. */}
+                  <Link
+                    className={css.taTailSerial}
+                    to={`/aircraft/${encodeURIComponent(row.serialNumber)}`}
+                  >
+                    {row.serialNumber}
+                  </Link>
                   <span className={css.taTailMeta}>
                     {row.customer}
                     {row.stationCode != null ? ` · ${row.stationCode}` : ""}
                   </span>
                 </div>
 
-                <div className={[css.taTrack, ghost ? css.taRowGhost : ""].join(" ")}>
+                {/* Pointer convenience only. The row's keyboard and screen
+                    reader path is the serial <Link> above; giving these cells
+                    their own tab stop would add a second focus target per row
+                    for twelve rows and make keyboard use worse, not better. */}
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                <div
+                  className={rowCell(css.taTrack)}
+                  onMouseEnter={enter}
+                  onMouseLeave={leave}
+                  onClick={open}
+                >
                   <span className={css.taTrackBase} />
 
                   {start != null && planned != null ? (
@@ -178,7 +210,13 @@ function DeliverySchedule({ ops }: Props): React.ReactElement {
                   ) : null}
                 </div>
 
-                <div className={[css.taSlipCell, ghost ? css.taRowGhost : ""].join(" ")}>
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                <div
+                  className={rowCell(css.taSlipCell)}
+                  onMouseEnter={enter}
+                  onMouseLeave={leave}
+                  onClick={open}
+                >
                   <span className={[css.taSlipValue, toneClass(row)].join(" ")}>
                     {slipLabel(row, ops.asOf)}
                   </span>

@@ -185,6 +185,40 @@ Note: generate.py still writes CRLF and the stored schemas now say "\r\n", so
 the two are consistent. If generate.py is ever changed to LF, the three schemas
 must be updated to match or parsing breaks again.
 
+2026-09-13  Drill-down: airframe detail
+---------------------------------------
+The overview claimed every number traced to a cause, but nothing was clickable
+and the UI never traversed a link — it batch-fetched and joined in memory. Both
+fixed by adding a detail view rather than a nav bar, because executives drill
+rather than browse.
+
+- src/data/useAircraftDetail.ts — NEW. Deliberately the opposite of
+  useOperations: holds ONE Aircraft and walks outward via $link.
+      Aircraft -> station
+      Aircraft -> workOrders -> station
+      Aircraft -> shortages -> part -> supplier
+      Aircraft -> nonConformances -> station
+  N+1 by design. At one airframe and a handful of linked rows it is cheap, and
+  it is the honest expression of the question. It is also the only place the 13
+  link types are visibly doing work.
+- src/dashboard/AircraftDetail.tsx — NEW. Verdict line, five figures, then
+  shortages / work orders / non-conformances. Each panel prints the link path
+  it walked (.taTraversal, ice mono) because the relationship is part of the
+  model, not an implementation detail.
+- src/dashboard/DeliverySchedule.tsx — MODIFIED. All 12 tail rows clickable.
+  The serial is a real <Link> so rows are keyboard reachable and middle-click
+  opens a tab; the track and slip cells carry pointer-only handlers with a
+  shared hover highlight, since the three cells are separate grid children.
+- src/router.tsx — MODIFIED. Added /aircraft/:serialNumber.
+- Dashboard.module.css — added .taBackLink, .taTraversal, .taEmpty,
+  .taRowLink, .taRowHot, .taTailButton.
+
+Accessibility note: eslint flagged click handlers on the non-interactive track
+and slip cells. Suppressed deliberately, with the reason in the source — the
+keyboard path already exists via the serial <Link>, and giving those cells
+their own tab stops would add a second focus target per row across twelve rows,
+which is worse for keyboard users, not better.
+
 NOTES / OPEN ITEMS
 ------------------
 - TWO SPEC CORRECTIONS, made in ontology-spec.md after reading the generated

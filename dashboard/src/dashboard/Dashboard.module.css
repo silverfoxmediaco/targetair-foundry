@@ -119,6 +119,73 @@
   max-width: 62ch;
 }
 
+/* ---- Drill-down ------------------------------------------------------- */
+
+.taBackLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--ta-font-display);
+  font-weight: 600;
+  font-size: var(--ta-size-h2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ta-ice);
+  text-decoration: none;
+}
+
+.taBackLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The link path a panel walked. Shown because the relationship is part of the
+   model, not an implementation detail. */
+.taTraversal {
+  font-family: var(--ta-font-mono);
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.02em;
+  color: var(--ta-ice);
+  opacity: 0.85;
+}
+
+.taEmpty {
+  color: var(--ta-text-faint);
+  font-size: var(--ta-size-body);
+}
+
+/* A whole schedule row behaves as one control. The grid owns the layout, so
+   the hit area is applied per cell and joined by a shared hover class. */
+.taRowLink {
+  cursor: pointer;
+}
+
+.taRowLink:hover .taTailSerial {
+  color: var(--ta-ice);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.taRowHot {
+  background: var(--ta-ice-wash);
+}
+
+.taTailButton {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  width: 100%;
+}
+
 /* ---- Panels ----------------------------------------------------------- */
 
 .taPanel {

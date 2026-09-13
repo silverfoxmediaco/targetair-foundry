@@ -113,13 +113,33 @@ generate.py  →  9 CSVs  →  Foundry datasets  →  9 object types + 13 link t
                                       React + TypeScript dashboard (OAuth/PKCE)
 ```
 
-- **Data layer** — [`dashboard/src/data/useOperations.ts`](dashboard/src/data/useOperations.ts)
+Two screens, and they read the ontology in deliberately opposite ways.
+
+- **Overview** (`/`) — [`dashboard/src/data/useOperations.ts`](dashboard/src/data/useOperations.ts)
   fetches seven object types in one parallel round and joins them in memory on
-  the same foreign keys the links are built from. At this cardinality that beats
+  the same foreign keys the links are built from. At programme scale that beats
   walking `$link` per row, which costs a request per hop.
+- **Airframe detail** (`/aircraft/:serialNumber`) —
+  [`dashboard/src/data/useAircraftDetail.ts`](dashboard/src/data/useAircraftDetail.ts)
+  does the opposite: it holds one `Aircraft` and traverses outward.
+
+  ```
+  Aircraft → station
+  Aircraft → workOrders → station
+  Aircraft → shortages → part → supplier
+  Aircraft → nonConformances → station
+  ```
+
+  N+1 by design. At one airframe and a handful of linked rows it is cheap, and
+  it is the honest expression of the question being asked. Each panel prints
+  the path it walked, because the relationship is part of the model rather than
+  an implementation detail.
+
+  Executives drill rather than browse, which is why this is reached by clicking
+  a tail on the schedule instead of from a nav bar.
 - **Traversal proof** — [`dashboard/src/Smoke.tsx`](dashboard/src/Smoke.tsx)
-  (route `/smoke`) deliberately *does* walk `$link` one object at a time, as a
-  connectivity check that auth, the generated SDK and link traversal all work.
+  (route `/smoke`) is a bare connectivity check that auth, the generated SDK
+  and link traversal all work. Not a user-facing page.
 - **Presentation** — [`dashboard/src/dashboard/`](dashboard/src/dashboard/).
   Hand-written CSS modules, no component library.
 
