@@ -1,0 +1,94 @@
+name: CI
+
+# Every push and every pull request. A check that only runs on main is mostly
+# theatre: by the time it fails, the broken commit is what everyone pulls.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  dashboard:
+    name: Dashboard — typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The Ontology SDK is published to a private Foundry registry that CI has
+      # no credentials for, and deliberately will not be given any. Two reasons,
+      # and the second is the decisive one:
+      #
+      #   1. A token with read and write access to the ontology has no business
+      #      sitting in the secrets of a public repository.
+      #   2. Foundry tokens are short-lived — roughly a day. A secret that has
+      #      to be rotated daily is not a secret, it is an outage waiting for a
+      #      Monday.
+      #
+      # So CI swaps the dependency for a local stub holding the SDK's real
+      # generated type declarations (ci/target-air-sdk-stub) plus an inert
+      # runtime. Typecheck is therefore genuine: it checks against the same
+      # types Foundry generated, so a property renamed in the ontology still
+      # breaks the build here. Only the runtime is fake, and nothing in the test
+      # suite calls into it.
+      - name: Point the SDK at the local stub
+        run: |
+          rm -f .npmrc
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.dependencies['@target-air/sdk'] = 'file:./ci/target-air-sdk-stub';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
+
+      # --no-package-lock because the lockfile pins the Foundry registry URL for
+      # @target-air/sdk, which no longer applies once it points at a local path.
+      - name: Install
+        run: npm install --no-package-lock
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx eslint src --report-unused-disable-directives --max-warnings 0
+
+      - name: Test
+        run: npx vitest run
+
+      - name: Build
+        run: npx vite build
+
+  data:
+    name: Data — generator is deterministic
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # generate.py is seeded, so re-running it must reproduce the committed
+      # CSVs byte for byte. If it does not, either the generator changed without
+      # the data being regenerated, or a change meant to be cosmetic moved the
+      # random draws — which is precisely how a rename silently reshapes every
+      # number in the dataset. That happened once on this project and this check
+      # is why it would not happen quietly again.
+      - name: Regenerate and compare
+        run: |
+          python3 generate.py
+          if ! git diff --exit-code -- data/; then
+            echo "::error::generate.py no longer reproduces the committed CSVs in data/."
+            echo "Run 'python3 generate.py' locally, check the diff is intended, and commit it."
+            exit 1
+          fi
+          echo "Generator output matches the committed data."
