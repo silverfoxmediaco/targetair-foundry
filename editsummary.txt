@@ -503,3 +503,36 @@ FOUR THINGS THAT TRIPPED THIS UP, all mechanical:
 
 NEXT (not done): repoint the object types from the raw datasets to clean/*.
 That changes what the live app reads, so one at a time with a row-count check.
+
+2026-09-13  Sign-in screen, Option B lockup, sign-out
+------------------------------------------------------
+SIGN-IN SCREEN (src/landing/) — deployed 0.2.0.
+Every route called auth.signIn() on mount, so opening the URL bounced straight
+to Foundry's login with no context. For anyone outside the enrollment — which
+is nearly everyone the link gets sent to — that reads as broken rather than
+secured. `/` is now a public front door that touches no data and triggers no
+auth; the dashboard moved to /dashboard and the drill-down back links follow it.
+
+Written IN-WORLD on James's steer: the reader is a Target Air executive
+arriving to check the program, not someone evaluating software. First attempt
+was an explainer about the build (object types, link types, the tech stack) —
+wrong brief. No marketing, no stack talk; "Restricted system" and the data
+sensitivity notice carry the tone.
+
+OPTION B LOCKUP (src/brand/Wordmark.tsx) — the "Delta mark" from wordmark.html:
+TARGET in Poppins 300 against AIR in 600, letter-spaced, beside the filled
+delta. The weight contrast IS the lockup; without it it is two words next to a
+triangle. Built as one shared component with hero/nav/tiny sizes carried over
+from the identity study, now used by both the sign-in screen and the dashboard
+masthead instead of two hand-rolled copies. Added @fontsource/poppins/300.
+
+SIGN-OUT — there wasn't one, which is poor on a screen calling itself a
+restricted system. auth.signOut() exists on PublicOauthClient. The handler
+clears the token, navigates to /, AND forces window.location.reload(): without
+the reload, React Router preserves component state and leaves program data
+rendered on a screen the user believes they have left. Verified: after sign-out
+the DOM contains no tail or program data.
+
+FOOTER — "Built by James McEwen · Silver Fox Media · on Palantir Foundry",
+name linking to the repo. In the footer rather than the sign-in card, so the
+fiction of an internal Target Air system holds.

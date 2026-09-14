@@ -1,0 +1,105 @@
+/* Target Air lockup — "Delta mark", option B.
+   Proportions carried over from the identity study in wordmark.html: mark and
+   wordmark sized together, gap and letter-spacing tightening as the lockup
+   shrinks so it stays optically even at 16px. */
+
+.taLk {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ta-ice);
+}
+
+.taMk {
+  flex: none;
+  display: block;
+  color: var(--ta-ice);
+}
+
+.taWd {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+  font-family: var(--ta-font-display);
+  color: var(--ta-text);
+  white-space: nowrap;
+}
+
+/* The weight contrast is the lockup. Without it this is just two words. */
+.taT1 {
+  font-weight: 300;
+}
+
+.taT2 {
+  font-weight: 600;
+}
+
+/* ---- Sizes ------------------------------------------------------------ */
+
+.taLkHero {
+  gap: 0.7rem;
+}
+.taLkHero .taMk {
+  width: 46px;
+  height: 46px;
+}
+.taLkHero .taWd {
+  font-size: 2.5rem;
+  letter-spacing: 0.14em;
+}
+.taLkHero .taT2 {
+  margin-left: 0.14em;
+}
+
+.taLkNav {
+  gap: 0.45rem;
+}
+.taLkNav .taMk {
+  width: 28px;
+  height: 28px;
+}
+.taLkNav .taWd {
+  font-size: 1.05rem;
+  letter-spacing: 0.13em;
+}
+.taLkNav .taT2 {
+  margin-left: 0.13em;
+}
+
+.taLkTiny {
+  gap: 0.3rem;
+}
+.taLkTiny .taMk {
+  width: 16px;
+  height: 16px;
+}
+.taLkTiny .taWd {
+  font-size: 0.62rem;
+  letter-spacing: 0.11em;
+}
+.taLkTiny .taT2 {
+  margin-left: 0.11em;
+}
+
+/* ---- Optional sub-line ------------------------------------------------ */
+
+.taLkStack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* Indented to clear the mark, so it aligns to the wordmark rather than to the
+   lockup as a whole. */
+.taLkSub {
+  font-size: var(--ta-size-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ta-text-faint);
+  line-height: 1;
+  padding-left: calc(28px + 0.45rem);
+}
+
+.taLkStack:has(.taLkHero) .taLkSub {
+  padding-left: calc(46px + 0.7rem);
+  letter-spacing: 0.26em;
+}

@@ -951,3 +951,23 @@
     grid-template-columns: 7rem minmax(0, 1fr) 3rem;
   }
 }
+
+/* Sign-out. Quiet by default — it is not the thing anyone came here to do —
+   but it has to exist on a screen that calls itself a restricted system. */
+.taSignOut {
+  font-family: var(--ta-font-ui);
+  font-size: var(--ta-size-label);
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--ta-radius);
+  border: 1px solid var(--ta-hairline-strong);
+  background: transparent;
+  color: var(--ta-text-muted);
+  cursor: pointer;
+  align-self: center;
+}
+
+.taSignOut:hover {
+  border-color: var(--ta-ice);
+  color: var(--ta-ice);
+}

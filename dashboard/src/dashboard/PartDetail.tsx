@@ -41,7 +41,7 @@ function PartDetail(): React.ReactElement {
       <div className={css.taInner}>
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
-            <Link className={css.taBackLink} to="/">
+            <Link className={css.taBackLink} to="/dashboard">
               ← Program overview
             </Link>
           </div>

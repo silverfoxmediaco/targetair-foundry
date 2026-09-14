@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 /**
  * Component to render at `/auth/callback`
- * This calls signIn() again to save the token, and then navigates the user back to the home page.
+ * This calls signIn() again to save the token, and then navigates the user to the dashboard. Not to "/", which is
+ * the public landing page — arriving back there after signing in reads as
+ * the sign-in having failed.
  */
 function AuthCallback(): React.ReactElement {
   const [error, setError] = useState<string | undefined>(undefined);
@@ -15,7 +17,7 @@ function AuthCallback(): React.ReactElement {
   useEffect(() => {
     auth
       .signIn()
-      .then(() => navigate("/", { replace: true }))
+      .then(() => navigate("/dashboard", { replace: true }))
       .catch((e: unknown) => {
         if (e instanceof Error) {
           setError(e.message);

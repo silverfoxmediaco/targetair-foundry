@@ -1,6 +1,7 @@
 import AuthCallback from "@/AuthCallback";
 import AircraftDetail from "@/dashboard/AircraftDetail";
 import Dashboard from "@/dashboard/Dashboard";
+import Landing from "@/landing/Landing";
 import PartDetail from "@/dashboard/PartDetail";
 import StationDetail from "@/dashboard/StationDetail";
 import SupplierDetail from "@/dashboard/SupplierDetail";
@@ -10,7 +11,13 @@ import { createBrowserRouter } from "react-router-dom";
 export const router = createBrowserRouter(
   [
     {
+      // Public. Touches no data and triggers no authentication, so the link is
+      // openable by anyone — everything else in the app signs in on mount.
       path: "/",
+      element: <Landing />,
+    },
+    {
+      path: "/dashboard",
       element: <Dashboard />,
     },
     {

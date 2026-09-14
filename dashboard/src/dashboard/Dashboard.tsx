@@ -1,4 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "@/client";
+import Wordmark from "@/brand/Wordmark";
 import { useOperations, type Operations } from "@/data/useOperations";
 import css from "./Dashboard.module.css";
 import DeliverySchedule from "./DeliverySchedule";
@@ -16,15 +19,6 @@ import { shortDateYear, usd } from "./format";
  * Everything below the schedule is cause: throughput, parts, suppliers,
  * quality. No number appears without something underneath it that explains it.
  */
-
-function Mark(): React.ReactElement {
-  return (
-    <svg className={css.taMark} viewBox="0 0 32 32" role="img" aria-label="Target Air">
-      <title>Target Air</title>
-      <path d="M16 2 L30 28 L16 20.5 L2 28 Z" fill="currentColor" />
-    </svg>
-  );
-}
 
 function Verdict({ ops }: { ops: Operations }): React.ReactElement {
   const { totals } = ops;
@@ -110,6 +104,17 @@ function Figures({ ops }: { ops: Operations }): React.ReactElement {
 
 function Dashboard(): React.ReactElement {
   const { data, error, loading, reload } = useOperations();
+  const navigate = useNavigate();
+
+  // signOut() clears the stored token, but the app keeps whatever it already
+  // fetched in memory until the page is torn down. Navigating is not enough —
+  // React Router would preserve component state and leave program data on a
+  // screen the user believes they have left. A full reload is the honest exit.
+  async function handleSignOut(): Promise<void> {
+    await auth.signOut().catch(() => undefined);
+    navigate("/", { replace: true });
+    window.location.reload();
+  }
 
   if (loading) {
     return <div className={css.taCenter}>Signing in and querying the ontology…</div>;
@@ -128,11 +133,7 @@ function Dashboard(): React.ReactElement {
       <div className={css.taInner}>
         <header className={css.taMasthead}>
           <div className={css.taBrand}>
-            <Mark />
-            <span className={css.taWordmark}>
-              <span className={css.taWordmarkName}>Target Air</span>
-              <span className={css.taWordmarkSub}>Program operations</span>
-            </span>
+            <Wordmark size="nav" sub="Program operations" />
           </div>
 
           <div className={css.taMastheadMeta}>
@@ -144,6 +145,9 @@ function Dashboard(): React.ReactElement {
               <span className={css.taMetaLabel}>As at</span>
               <span className={css.taMetaValue}>{shortDateYear(data.asOf)}</span>
             </span>
+            <button type="button" className={css.taSignOut} onClick={handleSignOut}>
+              Sign out
+            </button>
           </div>
         </header>
 
