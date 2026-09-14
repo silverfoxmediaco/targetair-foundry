@@ -9,7 +9,7 @@ import {
 } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
 import { useCallback, useEffect, useState } from "react";
-import client, { auth } from "@/client";
+import client, { signIn } from "@/client";
 
 /**
  * Loads every object type this screen needs in one parallel round, then joins
@@ -122,7 +122,7 @@ function daysBetween(from: Date, to: Date): number {
 }
 
 async function fetchAll(): Promise<Operations> {
-  await auth.signIn();
+  await signIn();
 
   const [
     aircraftPage,

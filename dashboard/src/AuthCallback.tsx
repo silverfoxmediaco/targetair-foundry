@@ -1,4 +1,4 @@
-import { auth } from "@/client";
+import { signIn } from "@/client";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,8 +15,7 @@ function AuthCallback(): React.ReactElement {
   // This effect conflicts with React 18 strict mode in development
   // https://react.dev/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development
   useEffect(() => {
-    auth
-      .signIn()
+    signIn()
       .then(() => navigate("/dashboard", { replace: true }))
       .catch((e: unknown) => {
         if (e instanceof Error) {

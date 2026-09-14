@@ -536,3 +536,80 @@ the DOM contains no tail or program data.
 FOOTER — "Built by James McEwen · Silver Fox Media · on Palantir Foundry",
 name linking to the repo. In the footer rather than the sign-in card, so the
 fiction of an internal Target Air system holds.
+
+## Platform branding — Foundry favicon and platform logos
+
+Added four SVGs in logo/ for Control Panel > Platform experience > Platform
+logo (Enrollment scope). One geometry, four declared sizes:
+
+  targetair-platform-favicon.svg       64px   -> Favicon      (cap 5 kB)
+  targetair-platform-logo-small.svg    64px   -> Small logo   (cap 10 kB)
+  targetair-platform-logo-medium.svg   96px   -> Medium logo  (cap 96x96 px)
+  targetair-platform-logo-large.svg   512px   -> Large logo   (no cap)
+
+314 bytes each. SVG rather than PNG because the same asset renders at 16px in
+a browser tab and much larger in a text-message link preview, and because the
+5 kB favicon cap rules out any PNG big enough to stay sharp at the top end.
+
+Ice mark (#5AB3D1) on the brand navy tile (#10161D), 20% corner radius. The
+baked-in dark ground is deliberate: it matches Palantir's own default favicon,
+and it satisfies the field's requirement to read on both light and dark - on
+white it reads as a dark app tile, on dark chrome the tile recedes and the
+blue mark carries it.
+
+Separate size files exist because the Medium slot rejects anything over 96px
+and some validators read the SVG's declared width/height rather than
+rasterising it.
+
+No wordmark on any of the four. The platform name is set on the adjacent
+"Platform title" tab; a wordmark baked into a 96px logo would be illegible.
+
+2026-09-13  The sign-in that could not restart itself
+------------------------------------------------------
+BUG: /dashboard rendered nothing but `response parameter "state" missing` on a
+dark screen. Reproduced on a tab that had been open across a sign-out; a freshly
+opened tab loaded the dashboard and real data fine. That split — same build,
+same user, one tab dead and one alive — is what made it look intermittent.
+
+ROOT CAUSE, in @osdk/oauth 1.14.0 rather than in our code. Before redirecting to
+Multipass, initiateLoginRedirect() writes {codeVerifier, state, oldUrl} to
+sessionStorage. Nothing on the normal paths takes them back out:
+maybeHandleAuthReturn() clears them only in its catch, so a SUCCESSFUL callback
+leaves them behind, and signOut() calls removeLocal() and never touches
+sessionStorage at all.
+
+A leftover codeVerifier is not inert, and that is the whole bug. signIn() checks
+for one BEFORE deciding whether to start a fresh login, and reads its presence
+as proof that the current URL is an OAuth callback:
+
+    maybeRefresh()          -> undefined once the refresh token is gone
+    maybeHandleAuthReturn() -> codeVerifier found, so validate window.location
+    validateAuthResponse()  -> /dashboard carries no ?state -> throws
+    initiateLoginRedirect() -> never reached
+
+So the one code path that could have fixed the problem — redirect and get a new
+state — is the path the stale state prevents us from reaching. sessionStorage
+survives reloads, so the tab could not recover by reloading either.
+
+CONFIRMED, not inferred. localStorage held `{}` under the refresh key, meaning
+the last write was initiateLoginRedirect's placeholder and no token exchange had
+written since. Removing the single sessionStorage key from the dead tab and
+reloading brought the full dashboard back with data. That is the diagnosis and
+its proof in one step.
+
+FIX (src/client.ts) — clearOauthSession() removes the key, and signIn() wraps
+auth.signIn() to clear it on the way out of a success AND to catch the
+state-missing failure, clear, and retry once. The retry falls through to a fresh
+authorization redirect, which is what should have happened the first time.
+
+The retry is not belt-and-braces. Clearing on success stops NEW tabs from being
+poisoned, but does nothing for tabs already holding a stale verifier — including
+any link already sent out. Self-healing on the error covers those.
+
+All five data hooks plus Smoke.tsx now call signIn() from @/client instead of
+auth.signIn() directly, so there is one sign-in path and not six.
+Dashboard.handleSignOut() calls clearOauthSession() before its reload, which is
+what makes sign-out followed by sign-in work in the same tab.
+
+Typecheck, lint, 35 tests and build all green. NOT YET DEPLOYED — the live site
+is still 0.2.1, which still has the bug.

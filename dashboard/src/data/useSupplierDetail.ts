@@ -1,7 +1,7 @@
 import { Supplier } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
 import { useCallback, useEffect, useState } from "react";
-import client, { auth } from "@/client";
+import client, { signIn } from "@/client";
 
 /**
  * One supplier, and everything downstream of it.
@@ -56,7 +56,7 @@ function toDate(value: string | undefined): Date | undefined {
 }
 
 async function fetchDetail(supplierId: string): Promise<SupplierDetail> {
-  await auth.signIn();
+  await signIn();
 
   const supplier: Osdk.Instance<Supplier> = await client(Supplier).fetchOne(supplierId);
   const partPage = await supplier.$link.parts.fetchPage({ $pageSize: 500 });

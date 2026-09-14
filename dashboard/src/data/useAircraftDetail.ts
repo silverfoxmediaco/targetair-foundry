@@ -1,7 +1,7 @@
 import { Aircraft } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
 import { useCallback, useEffect, useState } from "react";
-import client, { auth } from "@/client";
+import client, { signIn } from "@/client";
 
 /**
  * Detail for a single airframe, assembled by walking the ontology's links.
@@ -92,7 +92,7 @@ function daysBetween(from: Date, to: Date): number {
 }
 
 async function fetchDetail(serialNumber: string): Promise<AircraftDetail> {
-  await auth.signIn();
+  await signIn();
 
   const aircraft: Osdk.Instance<Aircraft> = await client(Aircraft).fetchOne(serialNumber);
   const asOf = new Date();

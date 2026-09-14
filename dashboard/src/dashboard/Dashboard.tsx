@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "@/client";
+import { auth, clearOauthSession } from "@/client";
 import Wordmark from "@/brand/Wordmark";
 import { useOperations, type Operations } from "@/data/useOperations";
 import css from "./Dashboard.module.css";
@@ -110,8 +110,13 @@ function Dashboard(): React.ReactElement {
   // fetched in memory until the page is torn down. Navigating is not enough —
   // React Router would preserve component state and leave program data on a
   // screen the user believes they have left. A full reload is the honest exit.
+  //
+  // It clears localStorage and leaves sessionStorage alone, so without
+  // clearOauthSession() the next sign-in attempt in this tab fails on a stale
+  // codeVerifier instead of redirecting.
   async function handleSignOut(): Promise<void> {
     await auth.signOut().catch(() => undefined);
+    clearOauthSession();
     navigate("/", { replace: true });
     window.location.reload();
   }

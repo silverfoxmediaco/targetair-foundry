@@ -1,7 +1,7 @@
 import { Part } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
 import { useCallback, useEffect, useState } from "react";
-import client, { auth } from "@/client";
+import client, { signIn } from "@/client";
 
 /**
  * One part.
@@ -65,7 +65,7 @@ function toDate(value: string | undefined): Date | undefined {
 }
 
 async function fetchDetail(partNumber: string): Promise<PartDetail> {
-  await auth.signIn();
+  await signIn();
 
   const part: Osdk.Instance<Part> = await client(Part).fetchOne(partNumber);
 

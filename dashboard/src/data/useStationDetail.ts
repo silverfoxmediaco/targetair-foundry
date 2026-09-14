@@ -1,7 +1,7 @@
 import { Station } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
 import { useCallback, useEffect, useState } from "react";
-import client, { auth } from "@/client";
+import client, { signIn } from "@/client";
 
 /**
  * One station on the line, assembled by traversing outward from it.
@@ -92,7 +92,7 @@ function daysBetween(from: Date, to: Date): number {
 }
 
 async function fetchDetail(stationCode: string): Promise<StationDetail> {
-  await auth.signIn();
+  await signIn();
 
   const station: Osdk.Instance<Station> = await client(Station).fetchOne(stationCode);
 

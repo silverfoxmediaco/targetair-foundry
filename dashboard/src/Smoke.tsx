@@ -1,7 +1,7 @@
 import { Aircraft, Part, Shortage, WorkOrder } from "@target-air/sdk";
 import type { Osdk } from "@osdk/client";
 import React, { useEffect, useState } from "react";
-import client, { auth } from "@/client";
+import client, { signIn } from "@/client";
 import css from "./Smoke.module.css";
 
 /**
@@ -28,7 +28,7 @@ function Smoke(): React.ReactElement {
     let cancelled = false;
 
     async function load(): Promise<void> {
-      await auth.signIn();
+      await signIn();
 
       const page = await client(Shortage).fetchPage({ $pageSize: 50 });
 
