@@ -99,7 +99,7 @@ function Landing(): React.ReactElement {
           >
             James McEwen
           </a>{" "}
-          · Silver Fox Media · on Palantir Foundry
+          | FDE | Full Stack Engineer · Silver Fox Media · on Palantir Foundry
         </span>
       </footer>
     </div>
