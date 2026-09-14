@@ -1,5 +1,7 @@
 # Target Air Limited
 
+![Target Air — program operations for unmanned aircraft, built on a Palantir Foundry ontology](brand/og-card.png)
+
 A prototype Palantir Foundry ontology and executive operations dashboard for a
 fictional contract manufacturer of unmanned aircraft.
 

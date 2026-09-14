@@ -45,3 +45,8 @@ venv/
 
 # Personal / other-client notes, not part of this project
 resume-hometaxpro-foundry.md
+
+# Playwright is installed on demand to render brand/og-card.png
+/node_modules/
+/package.json
+/package-lock.json
